@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "Captions Recorder for Google Meet",
+  "version": "1.0.0",
+  "author": "Hải Lập Trình",
+  "description": "Capture, preview, copy, and export live Google Meet captions with timestamps locally in your browser.",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Captions Recorder for Google Meet",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://meet.google.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

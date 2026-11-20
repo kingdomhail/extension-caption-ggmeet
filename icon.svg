@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="Captions Recorder for Google Meet">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A73E8" />
+      <stop offset="100%" stop-color="#0D9488" />
+    </linearGradient>
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#0F172A" flood-opacity="0.22" />
+    </filter>
+  </defs>
+
+  <!-- Rounded app tile -->
+  <rect x="8" y="8" width="112" height="112" rx="26" fill="url(#bgGrad)" />
+
+  <!-- Minimalist caption bubble frame -->
+  <g filter="url(#softShadow)">
+    <rect x="22" y="28" width="84" height="58" rx="14" fill="#FFFFFF" fill-opacity="0.18" stroke="#FFFFFF" stroke-width="3.5" />
+  </g>
+
+  <!-- Crisp CC typography -->
+  <text x="64" y="67" text-anchor="middle" fill="#FFFFFF" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="34" font-weight="800" letter-spacing="1">CC</text>
+
+  <!-- Subtle transcript lines below -->
+  <rect x="30" y="96" width="44" height="6" rx="3" fill="#FFFFFF" fill-opacity="0.92" />
+  <rect x="80" y="96" width="18" height="6" rx="3" fill="#FFFFFF" fill-opacity="0.6" />
+
+  <!-- Live recording status dot -->
+  <circle cx="99" cy="29" r="10.5" fill="#FFFFFF" />
+  <circle cx="99" cy="29" r="7.5" fill="#EF4444" />
+</svg>
