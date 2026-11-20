@@ -18,7 +18,7 @@ The Extension operates **only** on Google Meet pages (`https://meet.google.com/*
 ## 4. Local Storage & User Control
 - To prevent losing your meeting transcript when you close the extension popup or refresh your browser tab, captured caption lines (timestamp, speaker name, and caption text) are stored temporarily in your browser's local storage (`chrome.storage.local`), organized by Google Meet room code.
 - This data never leaves your local browser profile.
-- **Full User Control:** You can copy, download (`.txt`), or permanently delete stored captions for a meeting room at any time by clicking the **Clear ("Xóa dữ liệu")** button inside the Extension popup, or by clearing Chrome extension data / uninstalling the Extension.
+- **Full User Control:** You can copy, download (`.txt`), or permanently delete stored captions for a meeting room at any time by clicking the **Clear Data** button inside the Extension popup, or by clearing Chrome extension data / uninstalling the Extension.
 
 ## 5. Browser Permissions Explained
 The Extension requests only the minimum permissions necessary to function:

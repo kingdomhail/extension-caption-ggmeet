@@ -1,5 +1,5 @@
 /*!
- * Google Meet Captions Recorder - Content Script
+ * Captions Recorder for Google Meet - Content Script
  * Copyright (c) 2026 Hải Lập Trình. All rights reserved.
  */
 (() => {
@@ -426,9 +426,9 @@
       return null;
     }
 
-    // Nếu không tìm thấy tên người nói, kế thừa từ lượt trước hoặc đặt mặc định
+    // Fallback speaker label if speaker element is unavailable
     if (!speaker) {
-      speaker = fallbackSpeaker || 'Người nói';
+      speaker = fallbackSpeaker || 'Speaker';
     }
 
     return { speaker, text };
@@ -720,7 +720,7 @@
 
     if (container && containerVisible) {
       const blocks = findCaptionBlocks(container);
-      let lastSpeakerInScan = entries.length > 0 ? entries[entries.length - 1].speaker : 'Người nói';
+      let lastSpeakerInScan = entries.length > 0 ? entries[entries.length - 1].speaker : 'Speaker';
 
       for (const blockEl of blocks) {
         const parsed = parseCaptionBlock(blockEl, lastSpeakerInScan);

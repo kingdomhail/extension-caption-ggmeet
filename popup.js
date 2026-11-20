@@ -1,5 +1,5 @@
 /*!
- * Google Meet Captions Recorder - Popup Script
+ * Captions Recorder for Google Meet - Popup Script
  * Copyright (c) 2026 Hải Lập Trình. All rights reserved.
  */
 (() => {
@@ -45,7 +45,7 @@
   let copyFeedbackTimer = null;
 
   /**
-   * Trích xuất mã phòng họp từ URL Google Meet
+   * Extract Google Meet room code from URL
    */
   function getRoomIdFromUrl(urlString) {
     if (!urlString) return null;
@@ -65,8 +65,8 @@
   }
 
   /**
-   * Định dạng toàn bộ danh sách phụ đề theo chuẩn:
-   * [HH:MM:SS] Tên người nói: Nội dung câu nói
+   * Format transcript entries as:
+   * [HH:MM:SS] Speaker: Text
    */
   function formatTranscript(entries) {
     return entries
@@ -75,7 +75,7 @@
   }
 
   /**
-   * Tạo tên file tải xuống: meet-captions-YYYY-MM-DD.txt
+   * Build export filename: meet-captions-YYYY-MM-DD.txt
    */
   function buildFileName() {
     const now = new Date();
@@ -87,7 +87,7 @@
   }
 
   /**
-   * Hiển thị thông báo toast gọn gàng
+   * Show temporary toast notification
    */
   function showToast(message) {
     toastEl.textContent = message;
@@ -99,11 +99,11 @@
   }
 
   /**
-   * Cập nhật trạng thái UI (đèn trạng thái, bộ đếm dòng, phòng họp, nút chức năng)
+   * Render recording status, line count, room badge, and button states
    */
   function renderStatus() {
     const count = currentEntries.length;
-    lineCountEl.textContent = `${count} dòng`;
+    lineCountEl.textContent = `${count} ${count === 1 ? 'line' : 'lines'}`;
 
     const hasEntries = count > 0;
     copyBtn.disabled = !hasEntries;
@@ -111,40 +111,40 @@
     clearBtn.disabled = !hasEntries;
 
     if (isOnMeetTab && activeRoomId) {
-      roomBadgeEl.textContent = `Phòng: ${activeRoomId}`;
+      roomBadgeEl.textContent = `Room: ${activeRoomId}`;
       if (needsReloadHint) {
         statusDotEl.className = 'status-dot idle';
-        statusTextEl.textContent = 'Chưa kết nối trang';
-        statusHintEl.textContent = 'Tải lại (F5) tab Meet';
+        statusTextEl.textContent = 'Page not connected';
+        statusHintEl.textContent = 'Reload (F5) Meet tab';
       } else if (isRecording) {
         statusDotEl.className = 'status-dot recording';
-        statusTextEl.textContent = 'Đang ghi';
-        statusHintEl.textContent = 'Phụ đề đang bật';
+        statusTextEl.textContent = 'Recording';
+        statusHintEl.textContent = 'Captions ON';
       } else {
         statusDotEl.className = 'status-dot idle';
-        statusTextEl.textContent = 'Chưa bật phụ đề';
-        statusHintEl.textContent = 'Nhấn CC trên Meet';
+        statusTextEl.textContent = 'Captions Off';
+        statusHintEl.textContent = 'Click CC in Meet';
       }
     } else if (isOnMeetTab && !activeRoomId) {
-      roomBadgeEl.textContent = 'Trang chủ Google Meet';
+      roomBadgeEl.textContent = 'Google Meet Home';
       statusDotEl.className = 'status-dot offline';
-      statusTextEl.textContent = 'Chưa vào phòng họp';
-      statusHintEl.textContent = 'Tham gia cuộc họp để ghi';
+      statusTextEl.textContent = 'Not in a meeting';
+      statusHintEl.textContent = 'Join a meeting to record';
     } else if (activeRoomId) {
-      roomBadgeEl.textContent = `Phòng gần nhất: ${activeRoomId}`;
+      roomBadgeEl.textContent = `Last room: ${activeRoomId}`;
       statusDotEl.className = 'status-dot offline';
-      statusTextEl.textContent = 'Chưa bật phụ đề';
-      statusHintEl.textContent = 'Không ở tab Meet';
+      statusTextEl.textContent = 'Captions Off';
+      statusHintEl.textContent = 'Not on Meet tab';
     } else {
-      roomBadgeEl.textContent = 'Chưa mở Google Meet';
+      roomBadgeEl.textContent = 'Google Meet not open';
       statusDotEl.className = 'status-dot offline';
-      statusTextEl.textContent = 'Chưa bật phụ đề';
-      statusHintEl.textContent = 'Mở meet.google.com';
+      statusTextEl.textContent = 'Captions Off';
+      statusHintEl.textContent = 'Open meet.google.com';
     }
   }
 
   /**
-   * Render danh sách phụ đề xem trước (tự cuộn xuống cuối nếu đang ở gần đáy)
+   * Render latest captions preview (auto-scrolls when near bottom)
    */
   function renderCaptions() {
     const isNearBottom =
@@ -200,7 +200,7 @@
   }
 
   /**
-   * Đọc dữ liệu phòng họp từ chrome.storage.local
+   * Load stored captions for a room from chrome.storage.local
    */
   function loadRoomFromStorage(roomId) {
     return new Promise((resolve) => {
@@ -220,7 +220,7 @@
   }
 
   /**
-   * Gửi message tới content script trên tab Google Meet
+   * Send a message to the content script in the active Meet tab
    */
   function sendMessageToTab(tabId, payload) {
     return new Promise((resolve) => {
@@ -235,7 +235,7 @@
   }
 
   /**
-   * Copy chuỗi vào clipboard (có fallback execCommand nếu cần)
+   * Copy text to clipboard with fallback
    */
   async function copyTextToClipboard(text) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -243,7 +243,7 @@
         await navigator.clipboard.writeText(text);
         return true;
       } catch {
-        // Thử fallback bên dưới
+        // Fallback below
       }
     }
 
@@ -265,7 +265,7 @@
   }
 
   /**
-   * Đặt lại trạng thái nút xác nhận xóa
+   * Reset clear confirmation button state
    */
   function resetClearConfirm() {
     if (clearConfirmTimer) {
@@ -273,11 +273,11 @@
       clearConfirmTimer = null;
     }
     clearBtn.classList.remove('confirming');
-    clearBtnLabel.textContent = 'Xóa dữ liệu';
+    clearBtnLabel.textContent = 'Clear Data';
   }
 
   /**
-   * Sự kiện nút Copy toàn bộ
+   * Copy All button click handler
    */
   copyBtn.addEventListener('click', async () => {
     if (currentEntries.length === 0) return;
@@ -285,20 +285,20 @@
     const copied = await copyTextToClipboard(text);
     if (copied) {
       copyBtn.classList.add('copied');
-      copyBtnLabel.textContent = 'Đã copy!';
-      showToast('Đã copy toàn bộ phụ đề');
+      copyBtnLabel.textContent = 'Copied!';
+      showToast('Copied all captions');
       if (copyFeedbackTimer) clearTimeout(copyFeedbackTimer);
       copyFeedbackTimer = setTimeout(() => {
         copyBtn.classList.remove('copied');
-        copyBtnLabel.textContent = 'Copy toàn bộ';
+        copyBtnLabel.textContent = 'Copy All';
       }, 1800);
     } else {
-      showToast('Không thể copy vào Clipboard');
+      showToast('Failed to copy to clipboard');
     }
   });
 
   /**
-   * Sự kiện nút Tải file .txt
+   * Download .txt button click handler
    */
   downloadBtn.addEventListener('click', () => {
     if (currentEntries.length === 0) return;
@@ -315,18 +315,18 @@
     document.body.removeChild(anchor);
     setTimeout(() => URL.revokeObjectURL(url), 1000);
 
-    showToast(`Đã tải ${fileName}`);
+    showToast(`Downloaded ${fileName}`);
   });
 
   /**
-   * Sự kiện nút Xóa dữ liệu (xác nhận 2 bước gọn trong nút để tránh lỡ tay)
+   * Clear Data button click handler (two-step inline confirmation)
    */
   clearBtn.addEventListener('click', async () => {
     if (currentEntries.length === 0) return;
 
     if (!clearBtn.classList.contains('confirming')) {
       clearBtn.classList.add('confirming');
-      clearBtnLabel.textContent = 'Xác nhận xóa?';
+      clearBtnLabel.textContent = 'Confirm clear?';
       clearConfirmTimer = setTimeout(resetClearConfirm, 3000);
       return;
     }
@@ -351,11 +351,11 @@
 
     currentEntries = [];
     renderAll();
-    showToast('Đã xóa dữ liệu phụ đề');
+    showToast('Cleared caption data');
   });
 
   /**
-   * Lắng nghe cập nhật thời gian thực từ chrome.storage.local
+   * Listen for real-time updates from chrome.storage.local
    */
   chrome.storage.onChanged.addListener((changes, areaName) => {
     if (areaName !== 'local' || !activeRoomId) return;
@@ -373,7 +373,7 @@
   });
 
   /**
-   * Khởi tạo Popup: kiểm tra tab hiện tại, kết nối content script hoặc tải từ storage
+   * Initialize popup state from active tab or local storage
    */
   async function initPopup() {
     const tabs = await new Promise((resolve) => {
@@ -401,7 +401,7 @@
           return;
         }
 
-        // Content script chưa chạy trên tab đã mở trước khi cài extension -> đọc tạm từ storage
+        // Content script not yet injected on a pre-existing tab; fall back to stored captions
         needsReloadHint = true;
         const saved = await loadRoomFromStorage(activeRoomId);
         currentEntries = saved && Array.isArray(saved.entries) ? saved.entries : [];
@@ -414,7 +414,7 @@
       return;
     }
 
-    // Nếu không mở tab Google Meet, hiển thị lại phòng gần nhất đã lưu để tiện copy/xuất file
+    // When not on a Meet tab, show the most recently recorded room for easy export
     const lastRoomData = await new Promise((resolve) => {
       chrome.storage.local.get([LAST_ROOM_KEY], (res) => resolve(res[LAST_ROOM_KEY] || null));
     });
