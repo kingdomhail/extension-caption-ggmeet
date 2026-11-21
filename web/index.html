@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-vi="Trang chủ — Captions Recorder for Google Meet" data-en="Home — Captions Recorder for Google Meet">Trang chủ — Captions Recorder for Google Meet</title>
+  <meta name="description" data-vi="Trang chính thức của Captions Recorder for Google Meet. Ghi, xem trước, sao chép và xuất phụ đề Google Meet kèm giờ, ngay trên trình duyệt." data-en="Official site for Captions Recorder for Google Meet. Capture, preview, copy, and export Google Meet captions with timestamps in your browser." content="Trang chính thức của Captions Recorder for Google Meet. Ghi, xem trước, sao chép và xuất phụ đề Google Meet kèm giờ, ngay trên trình duyệt.">
+  <meta name="author" content="Hải Lập Trình">
+  <meta name="theme-color" content="#f4f7fb">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("caption-site-lang");
+        var nav = (navigator.language || "vi").toLowerCase();
+        var lang = saved === "en" || saved === "vi" ? saved : (nav.indexOf("vi") === 0 ? "vi" : "en");
+        document.documentElement.lang = lang;
+        var title = document.querySelector("title");
+        if (title) title.textContent = title.getAttribute(lang === "en" ? "data-en" : "data-vi");
+        var desc = document.querySelector('meta[name="description"]');
+        if (desc) desc.setAttribute("content", desc.getAttribute(lang === "en" ? "data-en" : "data-vi"));
+      } catch (err) {}
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip" href="#content"><span lang="vi">Tới nội dung</span><span lang="en">Skip to content</span></a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index.html">
+        <span class="mark" aria-hidden="true">CC<span class="live-dot"></span></span>
+        <span class="brand-name">
+          <strong>Captions Recorder</strong>
+          <small>for Google Meet</small>
+        </span>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="index.html" aria-current="page"><span lang="vi">Trang chủ</span><span lang="en">Home</span></a>
+        <a href="support.html"><span lang="vi">Hỗ trợ</span><span lang="en">Support</span></a>
+        <a href="privacy.html"><span lang="vi">Quyền riêng tư</span><span lang="en">Privacy</span></a>
+      </nav>
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button class="lang-btn" type="button" data-lang="vi">VI</button>
+        <button class="lang-btn" type="button" data-lang="en">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="content" tabindex="-1">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <p class="kicker"><span lang="vi">Trang chính thức</span><span lang="en">Official site</span></p>
+          <h1>
+            <span lang="vi">Ghi phụ đề Google Meet, ngay trên trình duyệt của bạn.</span>
+            <span lang="en">Record Google Meet captions, in your own browser.</span>
+          </h1>
+          <p class="lede" lang="vi">Captions Recorder for Google Meet đọc chữ phụ đề đang hiện trong cuộc họp, tách tên người nói, gắn giờ trên máy bạn và giữ bản ghi theo từng phòng. Bạn xem trước, sao chép hoặc tải file .txt. Phụ đề không được gửi đi đâu cả.</p>
+          <p class="lede" lang="en">Captions Recorder for Google Meet reads the caption text shown in a meeting, separates the speaker name, stamps your local time, and keeps a transcript per room. Preview it, copy it, or download a .txt file. Captions are never sent anywhere.</p>
+          <div class="cta">
+            <a class="btn btn-primary" href="support.html"><span lang="vi">Cách sử dụng</span><span lang="en">How to use</span></a>
+            <a class="btn btn-ghost" href="privacy.html"><span lang="vi">Quyền riêng tư</span><span lang="en">Privacy policy</span></a>
+          </div>
+        </div>
+
+        <figure class="stage">
+          <div class="popup" aria-hidden="true">
+            <div class="pv-head">
+              <div class="pv-brand">
+                <span class="mark mark-sm">CC<span class="live-dot"></span></span>
+                <div>
+                  <strong>Meet Captions</strong>
+                  <em>Room: abc-defg-hij</em>
+                </div>
+              </div>
+              <span class="pv-count">3 lines</span>
+            </div>
+            <div class="pv-status">
+              <span style="display:flex;align-items:center;gap:8px"><span class="pv-dot"></span><b>Recording</b></span>
+              <span>Captions ON</span>
+            </div>
+            <div class="pv-preview">
+              <div class="pv-preview-h"><span>Latest Captions Preview</span><span>Real-time</span></div>
+              <div class="pv-list">
+                <article class="cap">
+                  <div class="pv-meta"><time>[09:15:04]</time> <b>Alex Nguyen:</b></div>
+                  <p lang="vi">Xin chào mọi người đã tham gia buổi họp hôm nay.</p>
+                  <p lang="en">Welcome everyone to today's sprint review.</p>
+                </article>
+                <article class="cap">
+                  <div class="pv-meta"><time>[09:15:18]</time> <b>Minh Tran:</b></div>
+                  <p lang="vi">Cảm ơn anh, em xin cập nhật tiến độ tuần này.</p>
+                  <p lang="en">Thanks Alex, let me share the updates from this week.</p>
+                </article>
+                <article class="cap cap-last">
+                  <div class="pv-meta"><time>[09:15:31]</time> <b>Alex Nguyen:</b></div>
+                  <p lang="vi">Mọi người xem giúp mục đang chiếu trên màn hình.</p>
+                  <p lang="en">Please take a look at the item on screen.</p>
+                </article>
+              </div>
+            </div>
+            <div class="pv-actions">
+              <div class="pv-btn pv-btn-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copy All
+              </div>
+              <div class="pv-row">
+                <div class="pv-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                  Download .txt
+                </div>
+                <div class="pv-btn pv-btn-danger">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg>
+                  Clear Data
+                </div>
+              </div>
+            </div>
+            <div class="pv-copy">© 2026 Hải Lập Trình</div>
+          </div>
+          <figcaption>
+            <span lang="vi">Popup thật của tiện ích khi đang ghi. Các nút và trạng thái trên popup là tiếng Anh.</span>
+            <span lang="en">The real extension popup while it is recording. Popup labels are in English.</span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker"><span lang="vi">Tính năng</span><span lang="en">Features</span></p>
+          <h2><span lang="vi">Việc tiện ích làm giúp bạn</span><span lang="en">What the extension does</span></h2>
+          <p lang="vi">Nó không nghe micro và không dịch. Nó chỉ lấy phần chữ Google Meet đang hiển thị.</p>
+          <p lang="en">It does not use the microphone and it does not translate. It only keeps the caption text Google Meet is already showing.</p>
+        </div>
+        <ol class="feature-list">
+          <li>
+            <span class="num">01</span>
+            <div>
+              <h3 lang="vi">Đọc phụ đề trực tiếp</h3>
+              <h3 lang="en">Read live captions</h3>
+              <p lang="vi">Chỉ chạy trên meet.google.com, khi bạn đã bật CC. Giao diện Google Meet tiếng Việt và tiếng Anh đều dùng được.</p>
+              <p lang="en">It runs only on meet.google.com, after you turn captions on. Both the Vietnamese and English Google Meet interfaces are supported.</p>
+            </div>
+          </li>
+          <li>
+            <span class="num">02</span>
+            <div>
+              <h3 lang="vi">Tách người nói, không nhân dòng</h3>
+              <h3 lang="en">Split the speaker, skip duplicates</h3>
+              <p lang="vi">Tên người nói và câu nói được tách riêng. Câu đang nói dở được sửa trên cùng một dòng, thay vì thêm một dòng mới cho từng cụm từ.</p>
+              <p lang="en">Speaker name and spoken text are stored separately. An in-progress sentence is updated in place instead of adding a new line for every phrase.</p>
+            </div>
+          </li>
+          <li>
+            <span class="num">03</span>
+            <div>
+              <h3 lang="vi">Gắn giờ trên máy bạn</h3>
+              <h3 lang="en">Stamp your local time</h3>
+              <p lang="vi">Mỗi dòng có dạng [HH:MM:SS] Tên người nói: Nội dung câu nói.</p>
+              <p lang="en">Each line looks like [HH:MM:SS] Speaker: Spoken text.</p>
+            </div>
+          </li>
+          <li>
+            <span class="num">04</span>
+            <div>
+              <h3 lang="vi">Xem trước trong popup</h3>
+              <h3 lang="en">Preview in the popup</h3>
+              <p lang="vi">Bấm biểu tượng trên thanh công cụ để thấy trạng thái, số dòng và các câu mới nhất.</p>
+              <p lang="en">Click the toolbar icon to see status, the line count, and the latest lines.</p>
+            </div>
+          </li>
+          <li>
+            <span class="num">05</span>
+            <div>
+              <h3 lang="vi">Sao chép hoặc tải .txt</h3>
+              <h3 lang="en">Copy or download .txt</h3>
+              <p lang="vi">Copy All đưa cả bản ghi vào clipboard. Download .txt lưu file meet-captions-YYYY-MM-DD.txt.</p>
+              <p lang="en">Copy All puts the full transcript on the clipboard. Download .txt saves meet-captions-YYYY-MM-DD.txt.</p>
+            </div>
+          </li>
+          <li>
+            <span class="num">06</span>
+            <div>
+              <h3 lang="vi">Giữ riêng từng phòng họp</h3>
+              <h3 lang="en">Keep each room separate</h3>
+              <p lang="vi">Bản ghi nằm trong bộ nhớ cục bộ của Chrome, theo mã phòng. Đóng popup không xóa nội dung. Clear Data hỏi xác nhận trước khi xóa.</p>
+              <p lang="en">Transcripts stay in Chrome's local storage, keyed by room code. Closing the popup does not erase them. Clear Data asks you to confirm first.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker"><span lang="vi">Định dạng</span><span lang="en">Format</span></p>
+          <h2><span lang="vi">Nội dung file bạn tải về</span><span lang="en">What the downloaded file contains</span></h2>
+          <p lang="vi">Mỗi dòng là một câu đã ghi. Ngày trong tên file là ngày bạn bấm tải, theo đồng hồ máy bạn.</p>
+          <p lang="en">Each line is one recorded utterance. The date in the file name is the day you download it, using your computer's clock.</p>
+        </div>
+        <div class="log-card" lang="vi">
+          <p><time>[09:15:04]</time> <b>Nguyễn An:</b> Xin chào mọi người đã tham gia buổi họp hôm nay.</p>
+          <p><time>[09:15:18]</time> <b>Trần Minh:</b> Cảm ơn anh, em xin cập nhật tiến độ tuần này.</p>
+          <p class="log-file">meet-captions-2026-11-20.txt</p>
+        </div>
+        <div class="log-card" lang="en">
+          <p><time>[09:15:04]</time> <b>Alex Nguyen:</b> Welcome everyone to today's sprint review.</p>
+          <p><time>[09:15:18]</time> <b>Minh Tran:</b> Thanks Alex, let me share the updates from this week.</p>
+          <p class="log-file">meet-captions-2026-11-20.txt</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker"><span lang="vi">Cách dùng</span><span lang="en">How to use</span></p>
+          <h2><span lang="vi">Ba bước trong cuộc họp</span><span lang="en">Three steps during a meeting</span></h2>
+        </div>
+        <ol class="steps">
+          <li>
+            <span class="step-no">1</span>
+            <h3 lang="vi">Vào phòng trên Google Meet</h3>
+            <h3 lang="en">Join a Google Meet room</h3>
+            <p lang="vi">Mở một cuộc họp trên meet.google.com. Nếu tab đó đã mở sẵn từ trước khi cài tiện ích, hãy tải lại bằng F5.</p>
+            <p lang="en">Open a meeting on meet.google.com. If that tab was already open before you installed the extension, reload it with F5.</p>
+          </li>
+          <li>
+            <span class="step-no">2</span>
+            <h3 lang="vi">Bật phụ đề trên Meet</h3>
+            <h3 lang="en">Turn on captions in Meet</h3>
+            <p lang="vi">Bấm CC, hay Phụ đề, trên thanh điều khiển của Google Meet. Tiện ích không tự bật hộ bạn.</p>
+            <p lang="en">Click CC, or Captions, in the Google Meet controls. The extension does not turn captions on for you.</p>
+          </li>
+          <li>
+            <span class="step-no">3</span>
+            <h3 lang="vi">Mở popup của tiện ích</h3>
+            <h3 lang="en">Open the extension popup</h3>
+            <p lang="vi">Bấm biểu tượng trên thanh Chrome để xem trạng thái, rồi Copy All, Download .txt hoặc Clear Data. Nên ghim biểu tượng cho dễ thấy.</p>
+            <p lang="en">Click the Chrome toolbar icon to check status, then Copy All, Download .txt, or Clear Data. Pin the icon so it stays visible.</p>
+          </li>
+        </ol>
+        <p class="note">
+          <span lang="vi">Popup báo trạng thái khác với hình trên? Xem bảng chữ trên popup ở <a href="support.html#status">trang hỗ trợ</a>.</span>
+          <span lang="en">Seeing a different popup status than the picture above? Use the status table on the <a href="support.html#status">support page</a>.</span>
+        </p>
+
+        <div class="promise">
+          <div>
+            <h2><span lang="vi">Dữ liệu ở lại trên máy bạn</span><span lang="en">Your transcript stays on your device</span></h2>
+            <p lang="vi">Không có máy chủ nhận phụ đề. Không có thống kê sử dụng. Tiện ích không đọc trang web nào khác ngoài Google Meet.</p>
+            <p lang="en">No server receives your captions. There is no usage analytics. The extension does not read any site other than Google Meet.</p>
+            <a href="privacy.html"><span lang="vi">Đọc chính sách quyền riêng tư</span><span lang="en">Read the privacy policy</span></a>
+          </div>
+          <ul>
+            <li><span lang="vi">Không thu thập và không bán dữ liệu.</span><span lang="en">No data is collected or sold.</span></li>
+            <li><span lang="vi">Không cookie theo dõi, không quảng cáo.</span><span lang="en">No tracking cookies and no ads.</span></li>
+            <li><span lang="vi">Xóa bản ghi bằng Clear Data, hoặc gỡ tiện ích.</span><span lang="en">Delete a transcript with Clear Data, or uninstall the extension.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-row">
+      <div>
+        <div>© 2026 Hải Lập Trình</div>
+        <div>Captions Recorder for Google Meet · 1.0.0</div>
+      </div>
+      <div class="footer-links">
+        <a href="index.html"><span lang="vi">Trang chủ</span><span lang="en">Home</span></a>
+        <a href="support.html"><span lang="vi">Hỗ trợ</span><span lang="en">Support</span></a>
+        <a href="privacy.html"><span lang="vi">Quyền riêng tư</span><span lang="en">Privacy</span></a>
+        <a href="mailto:kingdomhail.dev@gmail.com">kingdomhail.dev@gmail.com</a>
+      </div>
+    </div>
+  </footer>
+  <script src="site.js"></script>
+</body>
+</html>

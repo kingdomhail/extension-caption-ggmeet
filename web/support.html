@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-vi="Hỗ trợ — Captions Recorder for Google Meet" data-en="Support — Captions Recorder for Google Meet">Hỗ trợ — Captions Recorder for Google Meet</title>
+  <meta name="description" data-vi="Hướng dẫn dùng Captions Recorder for Google Meet, ý nghĩa trạng thái trên popup và cách liên hệ khi phụ đề không được ghi." data-en="How to use Captions Recorder for Google Meet, what each popup status means, and how to get help when captions are not recording." content="Hướng dẫn dùng Captions Recorder for Google Meet, ý nghĩa trạng thái trên popup và cách liên hệ khi phụ đề không được ghi.">
+  <meta name="author" content="Hải Lập Trình">
+  <meta name="theme-color" content="#f4f7fb">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("caption-site-lang");
+        var nav = (navigator.language || "vi").toLowerCase();
+        var lang = saved === "en" || saved === "vi" ? saved : (nav.indexOf("vi") === 0 ? "vi" : "en");
+        document.documentElement.lang = lang;
+        var title = document.querySelector("title");
+        if (title) title.textContent = title.getAttribute(lang === "en" ? "data-en" : "data-vi");
+        var desc = document.querySelector('meta[name="description"]');
+        if (desc) desc.setAttribute("content", desc.getAttribute(lang === "en" ? "data-en" : "data-vi"));
+      } catch (err) {}
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip" href="#content"><span lang="vi">Tới nội dung</span><span lang="en">Skip to content</span></a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index.html">
+        <span class="mark" aria-hidden="true">CC<span class="live-dot"></span></span>
+        <span class="brand-name">
+          <strong>Captions Recorder</strong>
+          <small>for Google Meet</small>
+        </span>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="index.html"><span lang="vi">Trang chủ</span><span lang="en">Home</span></a>
+        <a href="support.html" aria-current="page"><span lang="vi">Hỗ trợ</span><span lang="en">Support</span></a>
+        <a href="privacy.html"><span lang="vi">Quyền riêng tư</span><span lang="en">Privacy</span></a>
+      </nav>
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button class="lang-btn" type="button" data-lang="vi">VI</button>
+        <button class="lang-btn" type="button" data-lang="en">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="content" tabindex="-1">
+    <section class="page-hero">
+      <div class="wrap">
+        <p class="kicker"><span lang="vi">Hỗ trợ</span><span lang="en">Support</span></p>
+        <h1>
+          <span lang="vi">Khi phụ đề chưa hiện trong popup</span>
+          <span lang="en">When captions are not showing in the popup</span>
+        </h1>
+        <p class="lede" lang="vi">Trang này dành cho người đang dùng Captions Recorder for Google Meet, phiên bản 1.0.0. Phần lớn trường hợp là chưa bật CC, hoặc tab Meet được mở trước khi cài tiện ích.</p>
+        <p class="lede" lang="en">This page is for people using Captions Recorder for Google Meet, version 1.0.0. Most cases are captions still off, or a Meet tab that was open before the extension was installed.</p>
+      </div>
+    </section>
+
+    <section class="section" id="start">
+      <div class="wrap">
+        <div class="section-head">
+          <h2><span lang="vi">Cách dùng</span><span lang="en">How to use it</span></h2>
+        </div>
+        <ol class="steps">
+          <li>
+            <span class="step-no">1</span>
+            <h3 lang="vi">Cài trên Chrome và ghim biểu tượng</h3>
+            <h3 lang="en">Install in Chrome and pin the icon</h3>
+            <p lang="vi">Tiện ích chạy trên Google Chrome. Sau khi cài, ghim biểu tượng CC lên thanh công cụ để khỏi phải đi tìm trong menu tiện ích.</p>
+            <p lang="en">The extension runs in Google Chrome. After installing, pin the CC icon to the toolbar so you do not have to open the extensions menu.</p>
+          </li>
+          <li>
+            <span class="step-no">2</span>
+            <h3 lang="vi">Vào phòng và bật phụ đề</h3>
+            <h3 lang="en">Join a room and turn captions on</h3>
+            <p lang="vi">Mở cuộc họp tại meet.google.com rồi bấm Phụ đề (CC). Nếu tab đã mở từ trước khi cài, bấm F5 một lần.</p>
+            <p lang="en">Open the meeting at meet.google.com and click Captions (CC). If the tab was open before installation, press F5 once.</p>
+          </li>
+          <li>
+            <span class="step-no">3</span>
+            <h3 lang="vi">Mở popup khi cần lấy chữ</h3>
+            <h3 lang="en">Open the popup when you need the text</h3>
+            <p lang="vi">Copy All chép toàn bộ. Download .txt tải file. Clear Data xóa bản ghi của phòng hiện tại sau khi bạn bấm xác nhận.</p>
+            <p lang="en">Copy All copies everything. Download .txt saves a file. Clear Data deletes the current room's transcript after you confirm.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="status">
+      <div class="wrap">
+        <div class="section-head">
+          <h2><span lang="vi">Popup đang nói gì</span><span lang="en">What the popup is saying</span></h2>
+          <p lang="vi">Chữ trên popup là tiếng Anh. Cột đầu tiên là đúng cụm bạn nhìn thấy: dòng trạng thái, rồi dòng gợi ý bên phải.</p>
+          <p lang="en">Popup text is English. The first column is the exact pair you see: the status line, then the hint on the right.</p>
+        </div>
+
+        <div class="table-wrap" lang="vi">
+          <table>
+            <thead>
+              <tr>
+                <th>Trên popup</th>
+                <th>Nghĩa là</th>
+                <th>Việc nên làm</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>Recording</code><br><code>Captions ON</code></td>
+                <td>Đang đọc được phụ đề trong phòng này. Huy hiệu phòng có dạng <code>Room: mã-phòng</code>.</td>
+                <td>Cứ để cuộc họp chạy. Mở popup khi muốn xem, sao chép hoặc tải file.</td>
+              </tr>
+              <tr>
+                <td><code>Captions Off</code><br><code>Click CC in Meet</code></td>
+                <td>Bạn đang ở trong phòng họp, nhưng Google Meet chưa hiện phụ đề.</td>
+                <td>Bấm CC hoặc Phụ đề trên thanh của Google Meet. Đợi một câu nói hiện ra rồi xem lại popup.</td>
+              </tr>
+              <tr>
+                <td><code>Page not connected</code><br><code>Reload (F5) Meet tab</code></td>
+                <td>Tab Meet chưa gắn với tiện ích. Hay gặp khi tab mở sẵn trước lúc cài, hoặc vừa được khôi phục.</td>
+                <td>Bấm F5 trên tab cuộc họp, sau đó bấm lại biểu tượng tiện ích.</td>
+              </tr>
+              <tr>
+                <td><code>Not in a meeting</code><br><code>Join a meeting to record</code></td>
+                <td>Tab Meet không có mã phòng. Huy hiệu vẫn ghi <code>Google Meet Home</code>, kể cả lúc bạn đang ở trang tạo cuộc họp hay một trang Meet khác.</td>
+                <td>Vào một cuộc họp có mã phòng trên thanh địa chỉ. Những trang Meet không có mã phòng sẽ không được ghi.</td>
+              </tr>
+              <tr>
+                <td><code>Captions Off</code><br><code>Not on Meet tab</code></td>
+                <td>Tab hiện tại không phải Meet. Huy hiệu <code>Last room: mã-phòng</code> là phòng ghi gần nhất còn lưu trên máy.</td>
+                <td>Quay lại tab cuộc họp để ghi tiếp. Bạn vẫn copy hoặc tải được bản đã lưu.</td>
+              </tr>
+              <tr>
+                <td><code>Captions Off</code><br><code>Open meet.google.com</code></td>
+                <td>Không có phòng nào đang mở và cũng chưa có bản ghi cục bộ. Huy hiệu ghi <code>Google Meet not open</code>.</td>
+                <td>Mở <a href="https://meet.google.com/" target="_blank" rel="noopener noreferrer">meet.google.com</a> và vào một cuộc họp.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-wrap" lang="en">
+          <table>
+            <thead>
+              <tr>
+                <th>On the popup</th>
+                <th>It means</th>
+                <th>What to do</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>Recording</code><br><code>Captions ON</code></td>
+                <td>Captions in this room are being read. The room badge looks like <code>Room: room-code</code>.</td>
+                <td>Leave the meeting running. Open the popup when you want to preview, copy, or download.</td>
+              </tr>
+              <tr>
+                <td><code>Captions Off</code><br><code>Click CC in Meet</code></td>
+                <td>You are in a meeting room, but Google Meet is not showing captions.</td>
+                <td>Click CC or Captions in the Google Meet bar. Wait until a line appears, then check the popup again.</td>
+              </tr>
+              <tr>
+                <td><code>Page not connected</code><br><code>Reload (F5) Meet tab</code></td>
+                <td>The Meet tab is not attached to the extension. This is common if the tab was open before installation, or was restored.</td>
+                <td>Press F5 on the meeting tab, then click the extension icon again.</td>
+              </tr>
+              <tr>
+                <td><code>Not in a meeting</code><br><code>Join a meeting to record</code></td>
+                <td>The Meet tab has no room code. The badge still says <code>Google Meet Home</code>, including while you are on the new-meeting page or another Meet page.</td>
+                <td>Join a meeting whose room code is in the address bar. Meet pages without a room code are not recorded.</td>
+              </tr>
+              <tr>
+                <td><code>Captions Off</code><br><code>Not on Meet tab</code></td>
+                <td>The current tab is not Meet. The badge <code>Last room: room-code</code> is the most recent room still saved on this device.</td>
+                <td>Return to the meeting tab to keep recording. You can still copy or download what was saved.</td>
+              </tr>
+              <tr>
+                <td><code>Captions Off</code><br><code>Open meet.google.com</code></td>
+                <td>No meeting is open and there is no local transcript yet. The badge says <code>Google Meet not open</code>.</td>
+                <td>Open <a href="https://meet.google.com/" target="_blank" rel="noopener noreferrer">meet.google.com</a> and join a meeting.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="wrap">
+        <div class="section-head">
+          <h2><span lang="vi">Câu hỏi thường gặp</span><span lang="en">Common questions</span></h2>
+        </div>
+        <div class="faq">
+          <details>
+            <summary><span lang="vi">Tiện ích có dịch hoặc ghi âm không?</span><span lang="en">Does it translate or record audio?</span></summary>
+            <div class="faq-body" lang="vi">
+              <p>Không. Tiện ích không dùng micro, không ghi âm, không dịch. Nó chỉ chép phần chữ Google Meet đang vẽ trên màn hình.</p>
+              <p>Muốn có phụ đề ngôn ngữ khác thì bật phụ đề hoặc bản dịch ngay trong Google Meet. Chữ nào Meet hiện, tiện ích ghi chữ đó.</p>
+            </div>
+            <div class="faq-body" lang="en">
+              <p>No. The extension does not use the microphone, record audio, or translate. It only copies the caption text Google Meet is drawing on screen.</p>
+              <p>To get captions in another language, turn on captions or translation inside Google Meet. Whatever text Meet shows is the text that gets saved.</p>
+            </div>
+          </details>
+          <details>
+            <summary><span lang="vi">Vì sao một câu dài bị sửa trên cùng một dòng?</span><span lang="en">Why does a long sentence change on the same line?</span></summary>
+            <div class="faq-body" lang="vi">
+              <p>Google Meet hiện câu dần dần. Tiện ích cập nhật đúng dòng đó cho đến khi sang câu hoặc người nói khác, nên bản ghi không bị lặp từng mảnh câu.</p>
+            </div>
+            <div class="faq-body" lang="en">
+              <p>Google Meet reveals a sentence gradually. The extension updates that same line until the utterance or the speaker changes, so the transcript does not repeat every fragment.</p>
+            </div>
+          </details>
+          <details>
+            <summary><span lang="vi">Bản ghi của phòng cũ còn không?</span><span lang="en">Is an older room's transcript still there?</span></summary>
+            <div class="faq-body" lang="vi">
+              <p>Còn, nếu bạn chưa xóa và chưa xóa dữ liệu tiện ích của Chrome. Mỗi mã phòng một bản ghi, lưu trong <code>chrome.storage.local</code> trên máy bạn.</p>
+              <p>Mở lại đúng phòng rồi bấm biểu tượng để xem tiếp. Nếu bạn đang đứng ở tab khác, popup có thể hiện <code>Last room</code> cùng bản đã lưu.</p>
+            </div>
+            <div class="faq-body" lang="en">
+              <p>Yes, unless you cleared it or removed the extension's Chrome data. Each room code has its own transcript in <code>chrome.storage.local</code> on your device.</p>
+              <p>Open that same room and click the icon to continue. On another tab, the popup can show <code>Last room</code> with the saved transcript.</p>
+            </div>
+          </details>
+          <details>
+            <summary><span lang="vi">Xóa dữ liệu như thế nào?</span><span lang="en">How do I delete a transcript?</span></summary>
+            <div class="faq-body" lang="vi">
+              <p>Bấm <code>Clear Data</code>. Trong khoảng 3 giây, nút đổi thành <code>Confirm clear?</code>. Bấm lần nữa để xóa bản ghi của phòng đang chọn. Hết 3 giây mà chưa bấm, nút trở lại như cũ và không xóa gì.</p>
+              <p>Nút chỉ bấm được khi đã có ít nhất một dòng.</p>
+            </div>
+            <div class="faq-body" lang="en">
+              <p>Click <code>Clear Data</code>. For about 3 seconds the button changes to <code>Confirm clear?</code>. Click it again to delete the selected room's transcript. If you wait out the 3 seconds, the button returns to normal and nothing is deleted.</p>
+              <p>The button stays disabled until there is at least one line.</p>
+            </div>
+          </details>
+          <details>
+            <summary><span lang="vi">File .txt nằm ở đâu?</span><span lang="en">Where does the .txt file go?</span></summary>
+            <div class="faq-body" lang="vi">
+              <p>Chrome lưu qua khung tải xuống của trình duyệt. Tên file là <code>meet-captions-YYYY-MM-DD.txt</code>. Ngày là ngày bạn bấm tải, theo giờ máy bạn. Bên trong là văn bản UTF-8, mỗi câu một dòng: <code>[HH:MM:SS] Tên: Nội dung</code>.</p>
+            </div>
+            <div class="faq-body" lang="en">
+              <p>Chrome saves it through the browser download shelf. The file name is <code>meet-captions-YYYY-MM-DD.txt</code>. The date is the day you download it, on your computer's clock. Inside is UTF-8 text, one utterance per line: <code>[HH:MM:SS] Name: Text</code>.</p>
+            </div>
+          </details>
+          <details>
+            <summary><span lang="vi">Tiện ích xin những quyền nào?</span><span lang="en">Which permissions does it ask for?</span></summary>
+            <div class="faq-body" lang="vi">
+              <ul>
+                <li><code>storage</code> — lưu phụ đề trên máy, theo mã phòng, để đóng popup không mất bản ghi.</li>
+                <li><code>activeTab</code> — khi bạn bấm biểu tượng, nhận ra tab hiện tại có phải phòng Meet hay không và nói chuyện với script trên tab đó.</li>
+                <li>Script nội dung chỉ gắn vào <code>https://meet.google.com/*</code> để đọc vùng phụ đề đang hiện.</li>
+              </ul>
+            </div>
+            <div class="faq-body" lang="en">
+              <ul>
+                <li><code>storage</code> — saves captions on the device, per room code, so closing the popup does not drop the transcript.</li>
+                <li><code>activeTab</code> — when you click the icon, checks whether the current tab is a Meet room and talks to the script on that tab.</li>
+                <li>The content script is attached only to <code>https://meet.google.com/*</code> so it can read the visible caption area.</li>
+              </ul>
+            </div>
+          </details>
+          <details>
+            <summary><span lang="vi">Gỡ tiện ích thì bản ghi còn không?</span><span lang="en">Does uninstalling remove the transcript?</span></summary>
+            <div class="faq-body" lang="vi">
+              <p>Gỡ tiện ích, hoặc xóa dữ liệu của tiện ích trong Chrome, sẽ xóa bản ghi cục bộ. Không có bản sao trên máy chủ, vì nội dung chưa từng được gửi đi.</p>
+            </div>
+            <div class="faq-body" lang="en">
+              <p>Uninstalling the extension, or clearing its data in Chrome, removes the local transcript. There is no server copy, because the text was never uploaded.</p>
+            </div>
+          </details>
+          <details>
+            <summary><span lang="vi">Meet đổi giao diện và không ghi nữa thì sao?</span><span lang="en">What if Meet changes and capture stops?</span></summary>
+            <div class="faq-body" lang="vi">
+              <p>Tải lại tab cuộc họp bằng F5 trước. Nếu popup vẫn là <code>Captions Off</code> trong khi bạn đang thấy phụ đề trên Meet, gửi email hỗ trợ. Cho biết giao diện Meet đang là tiếng Việt hay tiếng Anh, và chép đúng dòng trạng thái trên popup.</p>
+            </div>
+            <div class="faq-body" lang="en">
+              <p>Reload the meeting tab with F5 first. If the popup still says <code>Captions Off</code> while you can see captions in Meet, email support. Include whether the Meet interface is Vietnamese or English, and copy the exact popup status line.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="contact">
+      <div class="wrap">
+        <div class="section-head">
+          <h2><span lang="vi">Vẫn cần người xem giúp</span><span lang="en">Still need a person to look</span></h2>
+          <p lang="vi">Viết cho Hải Lập Trình. Kèm dòng trạng thái trên popup, ngôn ngữ giao diện Meet, và bạn đã bật CC cùng F5 chưa.</p>
+          <p lang="en">Write to Hải Lập Trình. Include the popup status line, the Meet interface language, and whether captions were on and the tab was reloaded.</p>
+        </div>
+        <div class="contact">
+          <div>
+            <h3>Hải Lập Trình</h3>
+            <p>kingdomhail.dev@gmail.com</p>
+          </div>
+          <a class="btn btn-primary" href="mailto:kingdomhail.dev@gmail.com?subject=Captions%20Recorder%20for%20Google%20Meet%20%E2%80%94%20Support"><span lang="vi">Gửi email hỗ trợ</span><span lang="en">Email support</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-row">
+      <div>
+        <div>© 2026 Hải Lập Trình</div>
+        <div>Captions Recorder for Google Meet · 1.0.0</div>
+      </div>
+      <div class="footer-links">
+        <a href="index.html"><span lang="vi">Trang chủ</span><span lang="en">Home</span></a>
+        <a href="support.html"><span lang="vi">Hỗ trợ</span><span lang="en">Support</span></a>
+        <a href="privacy.html"><span lang="vi">Quyền riêng tư</span><span lang="en">Privacy</span></a>
+        <a href="mailto:kingdomhail.dev@gmail.com">kingdomhail.dev@gmail.com</a>
+      </div>
+    </div>
+  </footer>
+  <script src="site.js"></script>
+</body>
+</html>

@@ -1,1 +1,3 @@
 /extension-release.*
+/web/node_modules
+/web/.next

@@ -1,0 +1,200 @@
+import { SiteChrome } from "@/components/SiteChrome"
+import { EMAIL } from "@/lib/site"
+
+export function PrivacyView({ lang }) {
+  return (
+    <SiteChrome lang={lang} page="privacy">
+      {lang === "en" ? <PrivacyEnglish /> : <PrivacyVietnamese />}
+    </SiteChrome>
+  )
+}
+
+function PrivacyEnglish() {
+  return (
+    <>
+      <section className="page-hero">
+        <div className="wrap">
+          <p className="kicker">Privacy policy</p>
+          <h1>Captions Recorder for Google Meet</h1>
+          <p className="lede">
+            The English text on this page is the official privacy policy. The Vietnamese text, at /vi/privacy, is a translation for easier reading.
+          </p>
+        </div>
+      </section>
+      <article className="section prose wrap">
+        <p className="dated">
+          Effective date: November 20, 2026
+          <br />
+          Developer: Hải Lập Trình
+        </p>
+
+        <h2>1. Overview</h2>
+        <p>
+          <strong>Captions Recorder for Google Meet</strong> (“the Extension”) is designed so that all caption processing and temporary storage happen only inside your web browser, on your own device.
+        </p>
+
+        <h2>2. Scope of operation</h2>
+        <p>
+          The Extension operates only on Google Meet pages (<code>https://meet.google.com/*</code>). It does not run on, monitor, read, or interact with any other websites, browser tabs, or browsing history.
+        </p>
+
+        <h2>3. Data collection and transmission</h2>
+        <ul>
+          <li>
+            <strong>No data collection:</strong> We do not collect, harvest, log, or store any personal information, account details, audio, video, or meeting transcripts on any external server.
+          </li>
+          <li>
+            <strong>No network requests:</strong> The Extension makes zero external network requests. Your captions are never transmitted to the developer or any third party.
+          </li>
+          <li>
+            <strong>No analytics or tracking:</strong> The Extension contains no analytics scripts, telemetry, advertising SDKs, cookies, or tracking mechanisms.
+          </li>
+          <li>
+            <strong>No sale or sharing of data:</strong> Because we do not collect or receive any user data, we never sell, rent, or transfer user data to third parties.
+          </li>
+        </ul>
+
+        <h2>4. Local storage and your control</h2>
+        <p>
+          To prevent losing your meeting transcript when you close the extension popup or refresh your browser tab, captured caption lines (timestamp, speaker name, and caption text) are stored temporarily in your browser&apos;s local storage (<code>chrome.storage.local</code>), organized by Google Meet room code.
+        </p>
+        <p>This data never leaves your local browser profile.</p>
+        <p>
+          <strong>Full control:</strong> you can copy, download (<code>.txt</code>), or permanently delete stored captions for a meeting room at any time with the <strong>Clear Data</strong> button in the popup. You can also clear the Extension&apos;s Chrome data or uninstall the Extension.
+        </p>
+
+        <h2>5. Browser permissions explained</h2>
+        <p>The Extension requests only the permissions it needs:</p>
+        <ul>
+          <li>
+            <strong><code>storage</code>:</strong> saves captured captions locally in <code>chrome.storage.local</code>, per meeting room.
+          </li>
+          <li>
+            <strong><code>activeTab</code>:</strong> identifies the active Google Meet room when you open the popup and communicates with the Extension&apos;s content script on that tab.
+          </li>
+          <li>
+            <strong>Content script access to <code>https://meet.google.com/*</code>:</strong> reads the visible caption text inside Google Meet&apos;s live captions area when you turn captions (CC) on.
+          </li>
+        </ul>
+
+        <h2>6. Changes to this privacy policy</h2>
+        <p>
+          If the Extension&apos;s privacy practices change in a future update, this privacy policy will be updated and the effective date at the top of this page will change with it.
+        </p>
+
+        <h2>7. Contact</h2>
+        <p>If you have questions about this privacy policy or the Extension, contact:</p>
+        <ul>
+          <li>
+            <strong>Developer:</strong> Hải Lập Trình
+          </li>
+          <li>
+            <strong>Support:</strong> <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+          </li>
+        </ul>
+        <p>© 2026 Hải Lập Trình. All rights reserved.</p>
+
+        <div className="note">
+          <p>
+            <strong>About this website.</strong> These pages do not use forms, analytics, or advertising cookies. English is the default language. Vietnamese pages are separate addresses under /vi. The language switch is a normal link, and this site does not save a language preference on your device.
+          </p>
+        </div>
+      </article>
+    </>
+  )
+}
+
+function PrivacyVietnamese() {
+  return (
+    <>
+      <section className="page-hero">
+        <div className="wrap">
+          <p className="kicker">Chính sách quyền riêng tư</p>
+          <h1>Captions Recorder for Google Meet</h1>
+          <p className="lede">
+            Bản tiếng Anh tại /privacy là bản chính của chính sách này. Bản tiếng Việt là bản dịch để dễ đọc.
+          </p>
+        </div>
+      </section>
+      <article className="section prose wrap">
+        <p className="dated">
+          Có hiệu lực: 20 tháng 11 năm 2026
+          <br />
+          Nhà phát triển: Hải Lập Trình
+        </p>
+
+        <h2>1. Tổng quan</h2>
+        <p>
+          <strong>Captions Recorder for Google Meet</strong> (“Tiện ích”) được làm để phụ đề chỉ được xử lý và lưu tạm bên trong trình duyệt, trên máy của bạn.
+        </p>
+
+        <h2>2. Phạm vi hoạt động</h2>
+        <p>
+          Tiện ích chỉ chạy trên trang Google Meet (<code>https://meet.google.com/*</code>). Nó không chạy, không theo dõi, không đọc và không tương tác với website khác, tab khác hay lịch sử duyệt web.
+        </p>
+
+        <h2>3. Thu thập và truyền dữ liệu</h2>
+        <ul>
+          <li>
+            <strong>Không thu thập dữ liệu:</strong> Chúng tôi không thu thập, ghi nhật ký hoặc lưu trên máy chủ bên ngoài bất kỳ thông tin cá nhân, tài khoản, âm thanh, video hay bản ghi cuộc họp nào.
+          </li>
+          <li>
+            <strong>Không có yêu cầu mạng:</strong> Tiện ích không gửi request ra ngoài. Phụ đề không được truyền cho nhà phát triển hay bên thứ ba.
+          </li>
+          <li>
+            <strong>Không thống kê, không theo dõi:</strong> Không có script analytics, telemetry, SDK quảng cáo, cookie hay cơ chế theo dõi.
+          </li>
+          <li>
+            <strong>Không bán hoặc chia sẻ:</strong> Vì chúng tôi không nhận dữ liệu người dùng, chúng tôi không bán, cho thuê hoặc chuyển dữ liệu cho bên thứ ba.
+          </li>
+        </ul>
+
+        <h2>4. Lưu cục bộ và quyền kiểm soát của bạn</h2>
+        <p>
+          Để khỏi mất bản ghi khi bạn đóng popup hoặc tải lại tab, các dòng phụ đề (giờ, tên người nói, nội dung) được lưu tạm trong bộ nhớ cục bộ của trình duyệt (<code>chrome.storage.local</code>), xếp theo mã phòng Google Meet.
+        </p>
+        <p>Dữ liệu này không rời khỏi hồ sơ trình duyệt trên máy bạn.</p>
+        <p>
+          <strong>Bạn toàn quyền xử lý:</strong> có thể sao chép, tải file <code>.txt</code>, hoặc xóa hẳn phụ đề của một phòng bằng nút <strong>Clear Data</strong> trong popup. Bạn cũng có thể xóa dữ liệu tiện ích trong Chrome hoặc gỡ tiện ích.
+        </p>
+
+        <h2>5. Giải thích quyền trình duyệt</h2>
+        <p>Tiện ích chỉ xin những quyền đủ để chạy:</p>
+        <ul>
+          <li>
+            <strong><code>storage</code>:</strong> lưu phụ đề cục bộ trong <code>chrome.storage.local</code> theo từng phòng.
+          </li>
+          <li>
+            <strong><code>activeTab</code>:</strong> nhận ra phòng Google Meet đang mở khi bạn bấm popup, và trao đổi với content script trên tab đó.
+          </li>
+          <li>
+            <strong>Content script trên <code>https://meet.google.com/*</code>:</strong> đọc chữ phụ đề đang hiện trong khung phụ đề của Google Meet khi bạn bật CC.
+          </li>
+        </ul>
+
+        <h2>6. Thay đổi chính sách</h2>
+        <p>
+          Nếu cách xử lý dữ liệu của tiện ích thay đổi ở bản cập nhật sau, chính sách này sẽ được sửa và ngày hiệu lực ở đầu trang sẽ đổi theo.
+        </p>
+
+        <h2>7. Liên hệ</h2>
+        <p>Nếu bạn có câu hỏi về chính sách này hoặc về tiện ích, hãy liên hệ:</p>
+        <ul>
+          <li>
+            <strong>Nhà phát triển:</strong> Hải Lập Trình
+          </li>
+          <li>
+            <strong>Hỗ trợ:</strong> <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+          </li>
+        </ul>
+        <p>© 2026 Hải Lập Trình. Bảo lưu mọi quyền.</p>
+
+        <div className="note">
+          <p>
+            <strong>Về website này.</strong> Các trang không có biểu mẫu, không có thống kê truy cập và không có cookie quảng cáo. Tiếng Anh là ngôn ngữ mặc định. Trang tiếng Việt nằm ở địa chỉ riêng, bắt đầu bằng /vi. Nút đổi ngôn ngữ là liên kết thông thường, website không lưu lựa chọn ngôn ngữ trên máy bạn.
+          </p>
+        </div>
+      </article>
+    </>
+  )
+}
