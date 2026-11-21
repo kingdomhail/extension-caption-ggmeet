@@ -29,18 +29,32 @@
       <span id="statusHint" class="status-hint"></span>
     </section>
 
+    <label class="mute-row" for="keepMutedToggle">
+      <span class="mute-copy">
+        <span class="mute-title">Keep mic muted</span>
+        <span class="mute-hint">Turns the microphone off if it opens</span>
+      </span>
+      <input id="keepMutedToggle" type="checkbox" role="switch" aria-label="Keep mic muted">
+    </label>
+
+    <div class="tabs" role="tablist" aria-label="Meeting details">
+      <button id="tabCaptions" class="tab" type="button" role="tab" aria-selected="true" aria-controls="captionList">Captions</button>
+      <button id="tabPeople" class="tab" type="button" role="tab" aria-selected="false" aria-controls="captionList">People</button>
+      <button id="tabChat" class="tab" type="button" role="tab" aria-selected="false" aria-controls="captionList">Chat</button>
+    </div>
+
     <main class="preview-wrapper">
       <div class="preview-header">
-        <span>Latest Captions Preview</span>
+        <span id="previewTitle">Latest Captions Preview</span>
         <span id="autoScrollHint" class="preview-sub">Real-time</span>
       </div>
 
       <div id="captionList" class="caption-list" role="log" aria-live="polite">
         <div id="emptyState" class="empty-state">
           <div class="empty-icon" aria-hidden="true">💬</div>
-          <p class="empty-title">No captions recorded yet</p>
-          <p class="empty-desc">
-            Join a Google Meet call and turn on <strong>Captions (CC)</strong> to start recording automatically.
+          <p id="emptyTitle" class="empty-title">No captions recorded yet</p>
+          <p id="emptyDesc" class="empty-desc">
+            Join a Google Meet call and turn on Captions (CC) to start recording automatically.
           </p>
         </div>
       </div>
@@ -78,6 +92,25 @@
           <span id="clearBtnLabel">Clear Data</span>
         </button>
       </div>
+    </footer>
+
+    <footer id="peopleActions" class="actions" hidden>
+      <div class="actions-secondary actions-three">
+        <button id="peoplePdfBtn" class="btn btn-secondary" type="button" disabled>PDF</button>
+        <button id="peopleExcelBtn" class="btn btn-secondary" type="button" disabled>Excel</button>
+        <button id="peoplePngBtn" class="btn btn-secondary" type="button" disabled>PNG</button>
+      </div>
+    </footer>
+
+    <footer id="chatActions" class="actions" hidden>
+      <button id="chatTxtBtn" class="btn btn-primary" type="button" disabled>
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>Download .txt</span>
+      </button>
     </footer>
 
     <div class="copyright">© 2026 Hải Lập Trình</div>

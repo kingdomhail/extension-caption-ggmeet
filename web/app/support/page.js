@@ -5,7 +5,7 @@ import { faqAnswerText, supportCopy } from "@/lib/support-content"
 
 const title = "Support — Captions Recorder for Google Meet"
 const description =
-  "How to use Captions Recorder for Google Meet, what each popup status means, and how to get help when captions are not recording."
+  "How to use Captions Recorder for Google Meet: captions, the participant list, in-call chat, exports, and the optional mute switch."
 
 export const metadata = pageMetadata({ lang: "en", page: "support", title, description })
 

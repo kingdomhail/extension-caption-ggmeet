@@ -47,10 +47,10 @@ export default function OpenGraphImage() {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <div style={{ fontSize: 40, color: "#0f172a", fontWeight: 700 }}>
-            Record Google Meet captions in your browser.
+            Record captions, people, and chat in your browser.
           </div>
           <div style={{ fontSize: 28, color: "#445266" }}>
-            Preview, copy, and export captions with timestamps. Nothing leaves your device.
+            Preview captions, the room, and chat. Keep the mic muted. Nothing is uploaded.
           </div>
         </div>
       </div>

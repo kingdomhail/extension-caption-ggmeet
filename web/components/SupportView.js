@@ -1,6 +1,6 @@
 import { SiteChrome } from "@/components/SiteChrome"
 import { RichText } from "@/components/RichText"
-import { AUTHOR, EMAIL } from "@/lib/site"
+import { AUTHOR, EMAIL, FACEBOOK } from "@/lib/site"
 import { supportCopy } from "@/lib/support-content"
 
 const mailHref = `mailto:${EMAIL}?subject=Captions%20Recorder%20for%20Google%20Meet%20%E2%80%94%20Support`
@@ -121,7 +121,14 @@ export function SupportView({ lang }) {
           <div className="contact">
             <div>
               <h3>{AUTHOR}</h3>
-              <p>{EMAIL}</p>
+              <p>
+                <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+              </p>
+              <p>
+                <a href={FACEBOOK} target="_blank" rel="noopener noreferrer">
+                  facebook.com/kingdomhail.dev
+                </a>
+              </p>
             </div>
             <a className="btn btn-primary" href={mailHref}>
               {t.contactButton}

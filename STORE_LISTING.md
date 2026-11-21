@@ -11,9 +11,9 @@ Tài liệu này chứa toàn bộ nội dung chuẩn hóa để copy & dán tr�
   ```text
   Captions Recorder for Google Meet
   ```
-- **Summary (101/132 chars):**
+- **Summary (90/132 chars):**
   ```text
-  Capture, preview, copy, and export live Google Meet captions with timestamps locally in your browser.
+  Save Meet captions, people, and chat on your device. Optionally keep the microphone muted.
   ```
 
 ### Tiếng Việt (Bản dịch tùy chọn / Localized Listing)
@@ -21,9 +21,9 @@ Tài liệu này chứa toàn bộ nội dung chuẩn hóa để copy & dán tr�
   ```text
   Ghi Phụ Đề Google Meet (Captions Recorder)
   ```
-- **Mô tả ngắn (115/132 ký tự):**
+- **Mô tả ngắn (99/132 ký tự):**
   ```text
-  Tự động ghi, xem trước, copy và xuất phụ đề Google Meet kèm mốc thời gian ngay trên trình duyệt, không gửi dữ liệu.
+  Lưu phụ đề, danh sách người và chat của Meet trên máy bạn. Có thể giữ mic tắt khi bạn bật công tắc.
   ```
 
 ---
@@ -32,60 +32,44 @@ Tài liệu này chứa toàn bộ nội dung chuẩn hóa để copy & dán tr�
 
 ### English (Copy & Paste)
 ```text
-Captions Recorder for Google Meet is a lightweight, privacy-first Chrome extension that automatically captures live closed captions during your Google Meet calls so you can review, copy, or export clean meeting notes in one click.
+Captions Recorder for Google Meet keeps a local copy of the captions, participant list, and in-call chat already shown in your Google Meet call. You can review and export them from the popup. An optional switch keeps the microphone muted by clicking Meet's mute button. It does not record audio.
 
 KEY FEATURES
-• Real-time Caption Capture: Automatically observes Google Meet's live captions region (supports both English and Vietnamese Google Meet interfaces).
-• Smart Speaker & Deduplication Engine: Accurately separates speaker names from spoken text and updates in-progress sentences cleanly instead of creating duplicate lines for every word.
-• Local Timestamps: Automatically tags each utterance with your local time in clean [HH:MM:SS] Speaker: Text format.
-• Live Popup Preview: Check recording status ("Recording" / "Captions Off"), line count, and real-time transcript preview anytime.
-• One-Click Export:
-  - Copy entire transcript to clipboard in [HH:MM:SS] Speaker: Text format.
-  - Download transcript directly as a plain text file (meet-captions-YYYY-MM-DD.txt).
-  - Clear transcript data safely with two-step confirmation.
-• Per-Room Local Persistence: Captions are stored temporarily by meeting room code in chrome.storage.local, so closing the popup never loses your meeting transcript.
-
-OUTPUT FORMAT EXAMPLE
-[09:15:04] Alex Nguyen: Welcome everyone to today's sprint review.
-[09:15:18] Minh Tran: Thanks Alex, let me share the updates from this week.
+• Captions: Reads the caption text Google Meet is showing, with the speaker name, local time, and profile photo when Meet shows one.
+• People: Lists participant names and photos. Export PDF, Excel, or PNG.
+• Chat: Keeps in-call messages already visible in Meet, with sender, time, and photo. Export .txt.
+• Optional Keep mic muted: When you turn it on, the extension clicks Meet's "Turn off microphone" button if the mic opens. It does not record audio and does not request microphone permission.
+• Local files: Copy or download captions as meet-captions-YYYY-MM-DD.txt. Clear Data asks you to confirm before deleting the current room's captions.
 
 HOW TO USE
-1. Join any meeting on https://meet.google.com/.
+1. Join a meeting on https://meet.google.com/.
 2. Turn on Closed Captions (CC) inside Google Meet.
-3. Click the extension icon on your Chrome toolbar to preview, copy, or download your transcript as a .txt file.
+3. Open the extension popup. Use Captions, People, or Chat. Turn on Keep mic muted only if you want the microphone kept off.
 
-100% LOCAL & PRIVACY-FIRST
-This extension runs entirely inside your browser. It does not collect personal information, does not use analytics or tracking scripts, and never sends your meeting captions to any external server.
+PRIVACY
+Meeting text stays in chrome.storage.local on your device. The developer does not receive it and does not sell it. The only network request is loading a profile photo from the Google image address already shown in the meeting. The extension runs only on meet.google.com, has no analytics, and does not use remote code. Full policy: https://extension-caption-ggmeet.vercel.app/privacy
 
 Copyright © 2026 Hải Lập Trình.
 ```
 
 ### Tiếng Việt (Bản dịch tham khảo / Localized Listing)
 ```text
-Captions Recorder for Google Meet là tiện ích Chrome siêu nhẹ, bảo mật tuyệt đối giúp bạn tự động ghi lại phụ đề (Captions) trên Google Meet theo thời gian thực để dễ dàng xem lại, copy hoặc xuất biên bản cuộc họp chỉ với một cú nhấp chuột.
+Captions Recorder for Google Meet lưu trên máy bạn bản phụ đề, danh sách người và chat mà Google Meet đang hiện. Bạn xem và xuất file từ popup. Công tắc tùy chọn giữ mic tắt bằng cách bấm nút tắt mic của Meet. Tiện ích không ghi âm.
 
 TÍNH NĂNG NỔI BẬT
-• Ghi phụ đề theo thời gian thực: Tự động theo dõi vùng phụ đề trực tiếp trên Google Meet (hỗ trợ cả giao diện Tiếng Việt và Tiếng Anh).
-• Tách người nói & chống trùng lặp thông minh: Tự tách chính xác Tên người nói và Nội dung câu nói, cập nhật câu đang nói dở mà không tạo hàng loạt dòng trùng lặp.
-• Gắn mốc thời gian chuẩn: Xuất nội dung sạch đẹp theo định dạng [HH:MM:SS] Tên người nói: Nội dung câu nói.
-• Xem trước trực tiếp trong Popup: Theo dõi trạng thái ghi (Đang ghi / Chưa bật phụ đề), số dòng đã thu thập và nội dung mới nhất.
-• Xuất & quản lý nhanh:
-  - Copy toàn bộ nội dung vào Clipboard chỉ bằng 1 click.
-  - Tải file văn bản meet-captions-YYYY-MM-DD.txt.
-  - Xóa dữ liệu an toàn với xác nhận 2 bước.
-• Lưu tạm theo từng mã phòng họp: Lưu trên chrome.storage.local nên không bị mất dữ liệu nếu bạn đóng popup trong lúc họp.
-
-VÍ DỤ ĐỊNH DẠNG XUẤT RA
-[09:15:04] Nguyễn Văn A: Xin chào mọi người đã tham gia buổi họp hôm nay.
-[09:15:18] Trần Thị B: Cảm ơn anh, em xin phép cập nhật tiến độ tuần này.
+• Phụ đề: Đọc chữ phụ đề Meet đang hiện, kèm tên người nói, giờ trên máy và ảnh nếu Meet có hiện.
+• Danh sách người: Tên và ảnh. Xuất PDF, Excel hoặc PNG.
+• Chat: Giữ tin nhắn Meet đang hiện, kèm người gửi, giờ và ảnh. Xuất .txt.
+• Keep mic muted (tùy chọn): Khi bạn bật, tiện ích bấm nút "Tắt micrô" của Meet nếu mic đang mở. Không ghi âm và không xin quyền micrô.
+• File trên máy: Copy hoặc tải phụ đề dạng meet-captions-YYYY-MM-DD.txt. Clear Data hỏi xác nhận trước khi xóa phụ đề của phòng hiện tại.
 
 HƯỚNG DẪN SỬ DỤNG NHANH
-1. Tham gia một cuộc họp trên https://meet.google.com/.
-2. Bật nút Phụ đề (CC) trong giao diện Google Meet.
-3. Nhấn vào biểu tượng extension trên thanh công cụ Chrome để xem trước, copy hoặc tải file .txt.
+1. Vào cuộc họp trên https://meet.google.com/.
+2. Bật Phụ đề (CC) trong Google Meet.
+3. Mở popup. Dùng Captions, People hoặc Chat. Chỉ bật Keep mic muted khi bạn muốn giữ mic tắt.
 
-CAM KẾT XỬ LÝ 100% CỤC BỘ
-Extension hoạt động hoàn toàn trên trình duyệt của bạn, không thu thập dữ liệu cá nhân, không theo dõi người dùng và tuyệt đối không gửi nội dung cuộc họp ra bất kỳ máy chủ bên ngoài nào.
+QUYỀN RIÊNG TƯ
+Nội dung họp nằm trong chrome.storage.local trên máy bạn. Nhà phát triển không nhận và không bán dữ liệu đó. Request mạng duy nhất là tải ảnh đại diện từ địa chỉ ảnh Google Meet đang hiện. Tiện ích chỉ chạy trên meet.google.com, không có thống kê và không dùng mã từ máy chủ. Chính sách: https://extension-caption-ggmeet.vercel.app/privacy
 
 Bản quyền © 2026 Hải Lập Trình.
 ```
@@ -108,7 +92,7 @@ Bản quyền © 2026 Hải Lập Trình.
 ### A. Single Purpose Description
 Copy & dán đoạn tiếng Anh sau vào ô **Single purpose description**:
 ```text
-Capture, deduplicate, preview, copy, and export live closed captions displayed in Google Meet meetings locally within the user's browser.
+Keep a local copy of the captions, participant names, and in-call chat already shown in the current Google Meet call, and, only when the user turns it on, click Meet's mute button so the microphone stays off.
 ```
 
 *(Bản dịch Tiếng Việt để tham khảo: Tự động ghi lại, chống trùng lặp, xem trước, copy và xuất phụ đề hiển thị trực tiếp trong các cuộc họp Google Meet hoàn toàn cục bộ trên trình duyệt người dùng.)*
@@ -121,7 +105,7 @@ Copy & dán từng đoạn giải trình tương ứng cho từng quyền hiển
 
 1. **`storage` justification:**
    ```text
-   Used solely to temporarily persist captured meeting captions per Google Meet room ID in chrome.storage.local so users do not lose their transcript when closing or reopening the extension popup or refreshing the meeting tab. All data remains strictly on the user's local device and can be deleted at any time using the Clear button.
+   Used solely to store, on the user's device, caption lines, participant names, in-call chat, profile photo addresses shown by Meet, and the user's Keep mic muted on/off choice. Nothing is uploaded to the developer. The user can delete captions with Clear Data, or remove all of it by clearing the extension's Chrome data or uninstalling.
    ```
 
 2. **`activeTab` justification:**
@@ -131,7 +115,7 @@ Copy & dán từng đoạn giải trình tương ứng cho từng quyền hiển
 
 3. **Host permission / Content Script match (`https://meet.google.com/*`) justification:**
    ```text
-   Required strictly so the content script can attach a MutationObserver to Google Meet's live captions container on https://meet.google.com/* pages to read visible speaker names and caption text in real time. The extension does not run on or access any other website.
+   Required only on https://meet.google.com/* so the content script can read the captions, participant names, and in-call chat Google Meet is already showing, and, only when the user has enabled Keep mic muted, click Meet's on-screen mute button. The extension does not run on any other website, does not record audio, and does not use remote code.
    ```
 
 ---
@@ -145,12 +129,18 @@ Copy & dán từng đoạn giải trình tương ứng cho từng quyền hiển
 
 ---
 
-### D. Data Usage (Hướng dẫn tích chọn trên Dashboard)
-1. **What user data do you plan to collect from users now or in the future?**
-   - **KHÔNG tích chọn bất kỳ ô nào** trong danh sách loại dữ liệu thu thập (Personally identifiable information, Health info, Website content, v.v.), vì toàn bộ phụ đề chỉ xử lý & lưu tạm cục bộ trên máy người dùng và **không bao giờ** truyền về máy chủ của nhà phát triển.
-2. **Certify the following disclosures (Tích chọn cả 3 ô cam kết bắt buộc):**
-   - `[x]` I do not sell or transfer user data to third parties, outside of the approved use cases.
-   - `[x]` I do not use or transfer user data for purposes that are unrelated to the item's single purpose.
-   - `[x]` I do not use or transfer user data to determine creditworthiness or for lending purposes.
-3. **Privacy Policy URL:**
-   - Upload file `PRIVACY_POLICY.md` lên GitHub repository (hoặc bật GitHub Pages) và dán link công khai vào ô **Privacy policy URL**.
+### D. Data usage and privacy policy URL
+The privacy policy Google reviews is:
+
+```text
+https://extension-caption-ggmeet.vercel.app/privacy
+```
+
+Do not write that the extension collects no user data. It reads captions, names, and chat from the Meet page and stores them on the device. The policy discloses that handling, states that the developer does not receive it, and states that the only network request is loading a profile photo from the Google image address already shown in the meeting.
+
+On the dashboard:
+
+1. Certify all three statements that you do not sell or transfer user data, do not use it for an unrelated purpose, and do not use it for creditworthiness.
+2. If a question asks whether meeting content is transmitted to the developer, answer no.
+3. Privacy policy URL: `https://extension-caption-ggmeet.vercel.app/privacy`
+4. Remote code: **No**. All HTML, CSS, and JavaScript ship inside the extension package. No remote scripts, `eval()`, or remotely hosted code.

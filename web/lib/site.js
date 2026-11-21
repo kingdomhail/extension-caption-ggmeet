@@ -1,7 +1,8 @@
 export const SITE_NAME = "Captions Recorder for Google Meet"
 export const AUTHOR = "Hải Lập Trình"
 export const EMAIL = "kingdomhail.dev@gmail.com"
-export const VERSION = "1.0.0"
+export const FACEBOOK = "https://www.facebook.com/kingdomhail.dev"
+export const VERSION = "1.1.0"
 
 export const routes = {
   home: { en: "/", vi: "/vi" },

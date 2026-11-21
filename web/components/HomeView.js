@@ -5,12 +5,12 @@ import { routes } from "@/lib/site"
 const copy = {
   en: {
     kicker: "Official site",
-    title: "Record Google Meet captions, in your own browser.",
-    lede: "Captions Recorder for Google Meet reads the caption text shown in a meeting, separates the speaker name, stamps your local time, and keeps a transcript per room. Preview it, copy it, or download a .txt file. Captions are never sent anywhere.",
+    title: "Record Meet captions, people, and chat in your browser.",
+    lede: "Captions Recorder for Google Meet keeps the caption text, the participant list, and in-call chat on your device. Each line shows the person's name and photo. You can export captions and chat as text, and the participant list as PDF, Excel, or PNG. An optional switch turns the microphone off again if it opens.",
     howTo: "How to use",
     privacy: "Privacy policy",
     caption:
-      "The real extension popup while it is recording. Popup labels are in English.",
+      "Illustration of the popup. Labels in the product are English.",
     lines: [
       { time: "09:15:04", speaker: "Alex Nguyen", text: "Welcome everyone to today's sprint review." },
       { time: "09:15:18", speaker: "Minh Tran", text: "Thanks Alex, let me share the updates from this week." },
@@ -19,14 +19,14 @@ const copy = {
     featuresKicker: "Features",
     featuresTitle: "What the extension does",
     featuresIntro:
-      "It does not use the microphone and it does not translate. It only keeps the caption text Google Meet is already showing.",
+      "It does not record audio and it does not translate. It keeps what Google Meet is already showing, and it can click Meet's mute button when you ask it to.",
     features: [
-      ["Read live captions", "It runs only on meet.google.com, after you turn captions on. Both the Vietnamese and English Google Meet interfaces are supported."],
-      ["Split the speaker, skip duplicates", "Speaker name and spoken text are stored separately. An in-progress sentence is updated in place instead of adding a new line for every phrase."],
-      ["Stamp your local time", "Each line looks like [HH:MM:SS] Speaker: Spoken text."],
-      ["Preview in the popup", "Click the toolbar icon to see status, the line count, and the latest lines."],
-      ["Copy or download .txt", "Copy All puts the full transcript on the clipboard. Download .txt saves meet-captions-YYYY-MM-DD.txt."],
-      ["Keep each room separate", "Transcripts stay in Chrome's local storage, keyed by room code. Closing the popup does not erase them. Clear Data asks you to confirm first."],
+      ["Captions, with the speaker", "After you turn captions on, each line keeps the local time, the speaker's name, their photo when Meet shows one, and the spoken text."],
+      ["People in the room", "The People tab lists names and photos. Open People in Meet for the full room. Download the list as PDF, Excel, or PNG."],
+      ["In-call chat", "The Chat tab keeps messages already visible in Meet, with the sender's name, photo, and time. Download them as a .txt file."],
+      ["Keep the microphone off", "Turn on Keep mic muted in the popup. If the mic opens, including by accident, the extension clicks Turn off microphone in Meet. It does not record sound."],
+      ["Copy or download captions", "Copy All puts the transcript on the clipboard. Download .txt saves meet-captions-YYYY-MM-DD.txt, one line per utterance."],
+      ["Keep each room separate", "Captions, people, and chat stay in Chrome's local storage, keyed by room code. Closing the popup does not erase them. Clear Data asks you to confirm first."],
     ],
     formatKicker: "Format",
     formatTitle: "What the downloaded file contains",
@@ -41,28 +41,28 @@ const copy = {
     steps: [
       ["Join a Google Meet room", "Open a meeting on meet.google.com. If that tab was already open before you installed the extension, reload it with F5."],
       ["Turn on captions in Meet", "Click CC, or Captions, in the Google Meet controls. The extension does not turn captions on for you."],
-      ["Open the extension popup", "Click the Chrome toolbar icon to check status, then Copy All, Download .txt, or Clear Data. Pin the icon so it stays visible."],
+      ["Open the extension popup", "Use Captions, People, and Chat. Copy or download from the tab you are on. Keep mic muted stays off until you turn it on."],
     ],
     noteBefore: "Seeing a different popup status than the picture above? Use the status table on the ",
     noteLink: "support page",
     noteAfter: ".",
-    promiseTitle: "Your transcript stays on your device",
+    promiseTitle: "Meeting notes stay in this browser",
     promiseBody:
-      "No server receives your captions. There is no usage analytics. The extension does not read any site other than Google Meet.",
+      "Captions, names, and chat are stored on your device. The developer does not receive them and does not sell them. A profile photo is loaded only from the image address Google Meet is already showing. The extension does not read any other website.",
     promiseLink: "Read the privacy policy",
     promises: [
-      "No data is collected or sold.",
-      "No tracking cookies and no ads.",
-      "Delete a transcript with Clear Data, or uninstall the extension.",
+      "Meeting content is not sent to the developer.",
+      "No analytics, no tracking cookies, and no ads.",
+      "Clear Data, Chrome's extension data, or uninstall removes the local copy.",
     ],
   },
   vi: {
     kicker: "Trang chính thức",
-    title: "Ghi phụ đề Google Meet, ngay trên trình duyệt của bạn.",
-    lede: "Captions Recorder for Google Meet đọc chữ phụ đề đang hiện trong cuộc họp, tách tên người nói, gắn giờ trên máy bạn và giữ bản ghi theo từng phòng. Bạn xem trước, sao chép hoặc tải file .txt. Phụ đề không được gửi đi đâu cả.",
+    title: "Ghi phụ đề, danh sách người và chat của Google Meet, ngay trên trình duyệt.",
+    lede: "Captions Recorder for Google Meet giữ phụ đề, danh sách người trong phòng và tin nhắn chat trên máy bạn. Mỗi dòng có tên và ảnh người đó. Phụ đề và chat xuất ra file chữ. Danh sách người xuất ra PDF, Excel hoặc PNG. Một công tắc tùy chọn sẽ tắt mic nếu mic vừa mở.",
     howTo: "Cách sử dụng",
     privacy: "Quyền riêng tư",
-    caption: "Popup thật của tiện ích khi đang ghi. Các nút và trạng thái trên popup là tiếng Anh.",
+    caption: "Hình minh họa popup. Chữ trên sản phẩm là tiếng Anh.",
     lines: [
       { time: "09:15:04", speaker: "Alex Nguyen", text: "Xin chào mọi người đã tham gia buổi họp hôm nay." },
       { time: "09:15:18", speaker: "Minh Tran", text: "Cảm ơn anh, em xin cập nhật tiến độ tuần này." },
@@ -70,14 +70,14 @@ const copy = {
     ],
     featuresKicker: "Tính năng",
     featuresTitle: "Việc tiện ích làm giúp bạn",
-    featuresIntro: "Nó không nghe micro và không dịch. Nó chỉ lấy phần chữ Google Meet đang hiển thị.",
+    featuresIntro: "Nó không ghi âm và không dịch. Nó giữ những gì Google Meet đang hiện, và có thể bấm nút tắt mic của Meet khi bạn bật công tắc.",
     features: [
-      ["Đọc phụ đề trực tiếp", "Chỉ chạy trên meet.google.com, khi bạn đã bật CC. Giao diện Google Meet tiếng Việt và tiếng Anh đều dùng được."],
-      ["Tách người nói, không nhân dòng", "Tên người nói và câu nói được tách riêng. Câu đang nói dở được sửa trên cùng một dòng, thay vì thêm một dòng mới cho từng cụm từ."],
-      ["Gắn giờ trên máy bạn", "Mỗi dòng có dạng [HH:MM:SS] Tên người nói: Nội dung câu nói."],
-      ["Xem trước trong popup", "Bấm biểu tượng trên thanh công cụ để thấy trạng thái, số dòng và các câu mới nhất."],
-      ["Sao chép hoặc tải .txt", "Copy All đưa cả bản ghi vào clipboard. Download .txt lưu file meet-captions-YYYY-MM-DD.txt."],
-      ["Giữ riêng từng phòng họp", "Bản ghi nằm trong bộ nhớ cục bộ của Chrome, theo mã phòng. Đóng popup không xóa nội dung. Clear Data hỏi xác nhận trước khi xóa."],
+      ["Phụ đề, kèm người nói", "Sau khi bạn bật CC, mỗi dòng giữ giờ trên máy, tên người nói, ảnh nếu Meet có hiện, và câu nói."],
+      ["Người trong phòng", "Tab People liệt kê tên và ảnh. Mở People trên Meet để lấy đủ cả phòng. Tải danh sách dạng PDF, Excel hoặc PNG."],
+      ["Chat trong cuộc gọi", "Tab Chat giữ tin Meet đang hiện, kèm tên, ảnh và giờ người gửi. Tải ra file .txt."],
+      ["Giữ mic tắt", "Bật Keep mic muted trên popup. Mic vừa mở, kể cả bật nhầm, tiện ích bấm Tắt micrô trên Meet. Nó không ghi âm."],
+      ["Sao chép hoặc tải phụ đề", "Copy All đưa bản ghi vào clipboard. Download .txt lưu meet-captions-YYYY-MM-DD.txt, mỗi câu một dòng."],
+      ["Giữ riêng từng phòng họp", "Phụ đề, danh sách người và chat nằm trong bộ nhớ cục bộ của Chrome, theo mã phòng. Đóng popup không xóa. Clear Data hỏi xác nhận trước khi xóa phụ đề."],
     ],
     formatKicker: "Định dạng",
     formatTitle: "Nội dung file bạn tải về",
@@ -91,21 +91,31 @@ const copy = {
     steps: [
       ["Vào phòng trên Google Meet", "Mở một cuộc họp trên meet.google.com. Nếu tab đó đã mở sẵn từ trước khi cài tiện ích, hãy tải lại bằng F5."],
       ["Bật phụ đề trên Meet", "Bấm CC, hay Phụ đề, trên thanh điều khiển của Google Meet. Tiện ích không tự bật hộ bạn."],
-      ["Mở popup của tiện ích", "Bấm biểu tượng trên thanh Chrome để xem trạng thái, rồi Copy All, Download .txt hoặc Clear Data. Nên ghim biểu tượng cho dễ thấy."],
+      ["Mở popup của tiện ích", "Dùng Captions, People và Chat. Sao chép hoặc tải từ tab đang mở. Keep mic muted chỉ chạy khi bạn bật."],
     ],
     noteBefore: "Popup báo trạng thái khác với hình trên? Xem bảng chữ trên popup ở ",
     noteLink: "trang hỗ trợ",
     noteAfter: ".",
-    promiseTitle: "Dữ liệu ở lại trên máy bạn",
+    promiseTitle: "Nội dung họp ở lại trên trình duyệt này",
     promiseBody:
-      "Không có máy chủ nhận phụ đề. Không có thống kê sử dụng. Tiện ích không đọc trang web nào khác ngoài Google Meet.",
+      "Phụ đề, tên và chat được lưu trên máy bạn. Nhà phát triển không nhận và không bán dữ liệu đó. Ảnh đại diện chỉ được tải từ địa chỉ ảnh Google Meet đang hiện. Tiện ích không đọc website nào khác.",
     promiseLink: "Đọc chính sách quyền riêng tư",
     promises: [
-      "Không thu thập và không bán dữ liệu.",
-      "Không cookie theo dõi, không quảng cáo.",
-      "Xóa bản ghi bằng Clear Data, hoặc gỡ tiện ích.",
+      "Nội dung cuộc họp không được gửi cho nhà phát triển.",
+      "Không thống kê, không cookie theo dõi, không quảng cáo.",
+      "Clear Data, xóa dữ liệu tiện ích trong Chrome, hoặc gỡ tiện ích sẽ xóa bản lưu trên máy.",
     ],
   },
+}
+
+function initials(name) {
+  return String(name || "")
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part[0] || "")
+    .join("")
+    .toUpperCase()
 }
 
 export function HomeView({ lang }) {
@@ -148,6 +158,15 @@ export function HomeView({ lang }) {
                 </span>
                 <span>Captions ON</span>
               </div>
+              <div className="pv-mute">
+                <span>Keep mic muted</span>
+                <span className="pv-switch" />
+              </div>
+              <div className="pv-tabs">
+                <span className="pv-tab pv-tab-on">Captions</span>
+                <span className="pv-tab">People</span>
+                <span className="pv-tab">Chat</span>
+              </div>
               <div className="pv-preview">
                 <div className="pv-preview-h">
                   <span>Latest Captions Preview</span>
@@ -157,7 +176,9 @@ export function HomeView({ lang }) {
                   {t.lines.map((line, index) => (
                     <article className={index === t.lines.length - 1 ? "cap cap-last" : "cap"} key={line.time}>
                       <div className="pv-meta">
-                        <time>[{line.time}]</time> <b>{line.speaker}:</b>
+                        <span className="pv-avatar">{initials(line.speaker)}</span>
+                        <b>{line.speaker}</b>
+                        <time>[{line.time}]</time>
                       </div>
                       <p>{line.text}</p>
                     </article>

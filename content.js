@@ -6,10 +6,15 @@
   'use strict';
 
   const STORAGE_PREFIX = 'meet_captions_';
+  const PEOPLE_PREFIX = 'meet_people_';
+  const CHAT_PREFIX = 'meet_chat_';
   const LAST_ROOM_KEY = 'meet_captions_last_room';
+  const MAX_CHAT_MESSAGES = 400;
   const SAVE_DEBOUNCE_MS = 300;
   const SCAN_THROTTLE_MS = 120;
   const HEALTH_CHECK_MS = 1500;
+  const KEEP_MUTED_KEY = 'meet_keep_muted';
+  const MUTE_COOLDOWN_MS = 700;
   const NEW_BLOCK_MERGE_WINDOW_MS = 8000;
 
   // Selector ưu tiên và dự phòng cho cấu trúc DOM của Google Meet
@@ -69,7 +74,17 @@
   let bodyObserver = null;
   let scanTimer = null;
   let saveTimer = null;
+  let sideSaveTimer = null;
   let lastCheckedUrl = '';
+  let people = [];
+  let peoplePartial = true;
+  let chatMessages = [];
+  let peopleSignature = '';
+  let chatSignature = '';
+  const avatarByName = new Map();
+  let keepMuted = false;
+  let lastMuteClickAt = 0;
+  let muteTimer = null;
 
   // Ánh xạ DOM block -> thông tin entry đã ghi để cập nhật đúng dòng đang nói
   let blockTrackMap = new WeakMap();
@@ -139,8 +154,43 @@
   }
 
   /**
-   * Kiểm tra nút bật/tắt phụ đề (CC) trên thanh công cụ Meet có đang bật không
+   * Nút có nhãn "Tắt micrô" / "Turn off microphone" nghĩa là mic đang mở
    */
+  function micIsOpen(label) {
+    const text = String(label || '').replace(/\s+/g, ' ').trim();
+    if (!text) return false;
+    if (/turn on|unmute|bật/i.test(text)) return false;
+    return /turn off microphone|mute microphone|tắt (tiếng )?(?:micrô|microphone|micro)(?!\p{L})/iu.test(text);
+  }
+
+  function findOpenMicButton() {
+    const buttons = document.querySelectorAll('button[aria-label], [role="button"][aria-label]');
+    for (const button of buttons) {
+      if (!micIsOpen(button.getAttribute('aria-label'))) continue;
+      if (button.disabled || button.getAttribute('aria-disabled') === 'true') continue;
+      if (!isElementVisible(button)) continue;
+      return button;
+    }
+    return null;
+  }
+
+  function enforceMute() {
+    if (!keepMuted) return;
+    if (Date.now() - lastMuteClickAt < MUTE_COOLDOWN_MS) return;
+    const button = findOpenMicButton();
+    if (!button) return;
+    lastMuteClickAt = Date.now();
+    button.click();
+  }
+
+  function scheduleMuteCheck() {
+    if (!keepMuted || muteTimer) return;
+    muteTimer = setTimeout(() => {
+      muteTimer = null;
+      enforceMute();
+    }, 200);
+  }
+
   function isCaptionToggleButtonOn() {
     const buttons = document.querySelectorAll('button[aria-label], [role="button"][aria-label]');
     for (const btn of buttons) {
@@ -180,17 +230,31 @@
   }
 
   /**
+   * Khung chat cũng dùng aria-live. Không được lấy tin nhắn làm phụ đề.
+   */
+  function isChatSurface(el) {
+    if (!el || el.nodeType !== Node.ELEMENT_NODE) return false;
+    if (el.closest('[jsname="xySENc"], [data-message-id*="/messages/"]')) return true;
+    if (el.querySelector('[data-message-id*="/messages/"]')) return true;
+    const label = `${el.getAttribute('aria-label') || ''} ${el.getAttribute('aria-controls') || ''}`.toLowerCase();
+    if (/\b(chat|tin nhắn)\b/.test(label)) return true;
+    return false;
+  }
+
+  /**
    * Tìm vùng chứa phụ đề (hỗ trợ Tiếng Việt, Tiếng Anh và fallback selector dự phòng)
    */
+  function acceptCaptionRoot(el) {
+    return Boolean(el) && !isExcludedControlElement(el) && !isChatSurface(el);
+  }
+
   function findCaptionContainer() {
     // 1. Ưu tiên selector theo chuẩn aria-label Tiếng Việt & Tiếng Anh trên role="region"
     const regionCandidates = document.querySelectorAll(
       '[role="region"][aria-label*="Phụ đề" i], [role="region"][aria-label*="Captions" i]'
     );
     for (const el of regionCandidates) {
-      if (!isExcludedControlElement(el)) {
-        return el;
-      }
+      if (acceptCaptionRoot(el)) return el;
     }
 
     // 2. Fallback: các thẻ div có aria-label chứa Phụ đề / Captions (loại trừ nút bấm & hộp thoại)
@@ -198,44 +262,21 @@
       'div[aria-label*="Phụ đề" i], div[aria-label*="Captions" i]'
     );
     for (const el of labelCandidates) {
-      if (!isExcludedControlElement(el)) {
-        return el;
-      }
+      if (acceptCaptionRoot(el)) return el;
     }
 
     // 3. Fallback: class/jsname phổ biến của Google Meet nếu đổi aria-label
     const knownContainer =
       document.querySelector('.a4cQT') ||
       document.querySelector('div[jsname="dsyhDe"]');
-    if (knownContainer && !isExcludedControlElement(knownContainer)) {
-      return knownContainer;
-    }
+    if (acceptCaptionRoot(knownContainer)) return knownContainer;
 
-    // 4. Fallback: suy ngược từ các block phụ đề hoặc jsname="tgaKEf"
-    for (const selector of [...BLOCK_SELECTORS, 'div[jsname="tgaKEf"]']) {
-      const sample = document.querySelector(selector);
-      if (sample) {
-        const regionParent = sample.closest('[role="region"]') || sample.parentElement;
-        if (regionParent && !isExcludedControlElement(regionParent)) {
-          return regionParent;
-        }
-      }
-    }
-
-    // 5. Fallback heuristic: vùng aria-live ở nửa dưới màn hình chứa nội dung phụ đề
-    const liveRegions = document.querySelectorAll('[aria-live="polite"], [aria-live="assertive"]');
-    for (const el of liveRegions) {
-      if (isExcludedControlElement(el)) continue;
-      const role = (el.getAttribute('role') || '').toLowerCase();
-      if (role === 'alert' || role === 'status') continue;
-      if (!isElementVisible(el)) continue;
-      const rect = el.getBoundingClientRect();
-      if (rect.bottom > window.innerHeight * 0.45 && rect.width >= 180 && rect.height >= 24) {
-        const hasAvatarOrBlocks = el.querySelector('img') || el.children.length >= 1;
-        if (hasAvatarOrBlocks && cleanDisplayText(el.textContent).length > 0) {
-          return el;
-        }
-      }
+    // 4. Suy ngược từ dòng phụ đề, bỏ qua ảnh và chữ nằm trong khung chat
+    const samples = document.querySelectorAll('[jsname="tgaKEf"], .nMcdL, .TBMuR, .iOzk7, [jsname="YSxPC"]');
+    for (const sample of samples) {
+      if (isChatSurface(sample)) continue;
+      const regionParent = sample.closest('[role="region"]') || sample.parentElement;
+      if (acceptCaptionRoot(regionParent)) return regionParent;
     }
 
     return null;
@@ -295,52 +336,70 @@
    * Tìm danh sách các khối (block) đại diện cho từng lượt nói trong vùng phụ đề
    */
   function findCaptionBlocks(container) {
-    if (!container) return [];
+    if (!container || isChatSurface(container)) return [];
+
+    const captionTexts = [...container.querySelectorAll('[jsname="tgaKEf"]')].filter((el) => !isChatSurface(el));
+    if (captionTexts.length > 0) {
+      const rows = [];
+      const seen = new Set();
+      for (const textNode of captionTexts) {
+        let row = textNode;
+        for (let depth = 0; depth < 5 && row.parentElement && row.parentElement !== container; depth += 1) {
+          const parent = row.parentElement;
+          if (isChatSurface(parent)) break;
+          const onlyThisLine = parent.querySelectorAll('[jsname="tgaKEf"]').length === 1;
+          if (onlyThisLine && avatarUrlIn(parent)) {
+            row = parent;
+            continue;
+          }
+          break;
+        }
+        if (!seen.has(row)) {
+          seen.add(row);
+          rows.push(row);
+        }
+      }
+      if (rows.length > 0) return rows;
+    }
 
     // 1. Dùng các selector block đã biết của Google Meet
     for (const selector of BLOCK_SELECTORS) {
       const matched = Array.from(container.querySelectorAll(selector)).filter(
-        (el) => !isExcludedControlElement(el)
+        (el) => !isExcludedControlElement(el) && !isChatSurface(el)
       );
       if (matched.length > 0) {
-        // Loại bỏ block lồng nhau (chỉ giữ lớp ngoài cùng trong danh sách match)
         return matched.filter((el) => !matched.some((other) => other !== el && other.contains(el)));
       }
     }
 
-    // 2. Fallback cấu trúc: tìm các phần tử con chứa avatar (img) + text
-    const avatarImgs = Array.from(container.querySelectorAll('img'));
+    // 2. Fallback cấu trúc: một ảnh đại diện đi cùng chữ của đúng một lượt nói
+    const avatarImgs = Array.from(container.querySelectorAll('img')).filter((img) => !isChatSurface(img));
     if (avatarImgs.length > 0) {
       const blockSet = new Set();
       for (const img of avatarImgs) {
         let candidate = img.parentElement;
         while (candidate && candidate.parentElement && candidate.parentElement !== container) {
+          if (isChatSurface(candidate)) break;
           const textLen = extractCleanText(candidate).length;
-          // Dừng ở khối chứa cả tên người nói và nội dung câu nói
           if (candidate.children.length >= 2 && textLen > 0) {
-            const parentImgCount = candidate.parentElement.querySelectorAll('img').length;
-            if (parentImgCount > 1 || candidate.parentElement === container) {
-              break;
-            }
+            const parentImgCount = [...candidate.parentElement.querySelectorAll('img')].filter((node) => !isChatSurface(node)).length;
+            if (parentImgCount > 1 || candidate.parentElement === container) break;
           }
           candidate = candidate.parentElement;
         }
-        if (candidate && candidate !== container && !isExcludedControlElement(candidate)) {
+        if (candidate && candidate !== container && !isExcludedControlElement(candidate) && !isChatSurface(candidate)) {
           blockSet.add(candidate);
         }
       }
-      if (blockSet.size > 0) {
-        return Array.from(blockSet);
-      }
+      if (blockSet.size > 0) return Array.from(blockSet);
     }
 
-    // 3. Fallback cuối cùng: duyệt các div con trực tiếp có nội dung text
     const directChildren = Array.from(container.children).filter(
-      (el) => !isExcludedControlElement(el) && extractCleanText(el).length > 0
+      (el) => !isExcludedControlElement(el) && !isChatSurface(el) && extractCleanText(el).length > 0
     );
     if (directChildren.length === 1 && directChildren[0].children.length > 1) {
       const grandChildren = Array.from(directChildren[0].children).filter(
-        (el) => !isExcludedControlElement(el) && extractCleanText(el).length > 0
+        (el) => !isExcludedControlElement(el) && !isChatSurface(el) && extractCleanText(el).length > 0
       );
       if (grandChildren.length > 0) return grandChildren;
     }
@@ -348,9 +407,39 @@
   }
 
   /**
+   * Tên người nói là đoạn chữ ngắn nằm cạnh câu phụ đề, không lấy chữ trong khung chat
+   */
+  function speakerNear(blockEl, textNode) {
+    if (!blockEl) return '';
+    let best = '';
+    const nodes = [blockEl, ...blockEl.querySelectorAll('div, span')];
+    for (const el of nodes) {
+      if (textNode && (el === textNode || el.contains(textNode))) continue;
+      if (isExcludedControlElement(el)) continue;
+      const value = cleanPersonName(extractCleanText(el));
+      if (!isPlausibleName(value)) continue;
+      if (!best || value.length < best.length) best = value;
+    }
+    return best;
+  }
+
+  /**
    * Tách Tên người nói và Nội dung câu nói từ một block phụ đề
    */
   function parseCaptionBlock(blockEl, fallbackSpeaker) {
+    if (!blockEl || isChatSurface(blockEl)) return null;
+
+    const textNode = blockEl.matches('[jsname="tgaKEf"]')
+      ? blockEl
+      : blockEl.querySelector('[jsname="tgaKEf"]');
+    if (textNode && !isChatSurface(textNode)) {
+      const text = extractCleanText(textNode);
+      const speaker = speakerNear(blockEl, textNode) || fallbackSpeaker || 'Speaker';
+      if (text && !IGNORED_UI_TEXTS.has(text.toLowerCase())) {
+        return { speaker, text, avatarUrl: avatarUrlIn(blockEl) };
+      }
+    }
+
     let speakerEl = null;
     let speaker = '';
 
@@ -428,10 +517,10 @@
 
     // Fallback speaker label if speaker element is unavailable
     if (!speaker) {
-      speaker = fallbackSpeaker || 'Speaker';
+      speaker = speakerNear(blockEl, speakerEl) || fallbackSpeaker || 'Speaker';
     }
 
-    return { speaker, text };
+    return { speaker, text, avatarUrl: avatarUrlIn(blockEl) };
   }
 
   /**
@@ -519,7 +608,7 @@
   /**
    * Tạo entry mới
    */
-  function createEntry(speaker, text) {
+  function createEntry(speaker, text, avatarUrl) {
     const now = Date.now();
     entryCounter += 1;
     return {
@@ -527,23 +616,33 @@
       timestamp: formatLocalTime(new Date(now)),
       speaker,
       text,
+      avatarUrl: avatarUrl || '',
       createdAt: now,
       updatedAt: now
     };
   }
 
+  function assignAvatar(entry, avatarUrl) {
+    if (!entry || !avatarUrl || entry.avatarUrl === avatarUrl) return false;
+    entry.avatarUrl = avatarUrl;
+    return true;
+  }
+
   /**
    * Xử lý một block phụ đề và áp dụng logic chống trùng lặp / cập nhật câu đang nói
    */
-  function upsertCaptionBlock(blockEl, speaker, text) {
+  function upsertCaptionBlock(blockEl, speaker, text, avatarUrl) {
     const now = Date.now();
+    if (avatarUrl) avatarByName.set(nameKey(speaker), avatarUrl);
+    const photo = avatarUrl || avatarFor(speaker);
     const tracked = blockTrackMap.get(blockEl);
 
     if (tracked) {
       const existing = entries.find((item) => item.id === tracked.entryId);
       if (existing && existing.speaker === speaker) {
+        const avatarChanged = assignAvatar(existing, photo);
         if (tracked.lastRawText === text) {
-          return false;
+          return avatarChanged;
         }
 
         // Xử lý nếu Google Meet cắt bớt câu cũ ở đầu block quá dài
@@ -552,7 +651,7 @@
           existing.text = evictedPrefix;
           existing.updatedAt = now;
 
-          const nextEntry = createEntry(speaker, text);
+          const nextEntry = createEntry(speaker, text, photo);
           entries.push(nextEntry);
           blockTrackMap.set(blockEl, {
             entryId: nextEntry.id,
@@ -571,7 +670,7 @@
         }
 
         // Block DOM bị tái sử dụng cho câu hoàn toàn mới -> tạo dòng mới
-        const newEntry = createEntry(speaker, text);
+        const newEntry = createEntry(speaker, text, photo);
         entries.push(newEntry);
         blockTrackMap.set(blockEl, {
           entryId: newEntry.id,
@@ -598,7 +697,7 @@
           lastRawText: text,
           speaker
         });
-        return false;
+        return assignAvatar(candidate, photo);
       }
 
       // Chỉ gộp cập nhật vào dòng gần nhất của người đó (trong 2 dòng cuối)
@@ -608,6 +707,7 @@
           candidate.text = text;
           candidate.updatedAt = now;
         }
+        assignAvatar(candidate, photo);
         blockTrackMap.set(blockEl, {
           entryId: candidate.id,
           lastRawText: text,
@@ -618,7 +718,7 @@
     }
 
     // Đổi người nói hoặc sang câu mới -> tạo dòng mới với mốc thời gian thực
-    const newEntry = createEntry(speaker, text);
+    const newEntry = createEntry(speaker, text, photo);
     entries.push(newEntry);
     blockTrackMap.set(blockEl, {
       entryId: newEntry.id,
@@ -696,12 +796,32 @@
   }
 
   /**
+   * Bỏ các dòng phụ đề thực ra là tin chat đã đọc nhầm
+   */
+  function forgetChatLines() {
+    if (chatMessages.length === 0 || entries.length === 0) return false;
+    const chatNorms = chatMessages
+      .map((message) => normalizeText(message.text))
+      .filter((text) => text.length >= 12);
+    if (chatNorms.length === 0) return false;
+    const next = entries.filter((entry) => {
+      const norm = normalizeText(entry.text);
+      if (!norm) return true;
+      return !chatNorms.some((chat) => norm === chat || (chat.length >= 40 && norm.includes(chat)));
+    });
+    if (next.length === entries.length) return false;
+    entries = next;
+    blockTrackMap = new WeakMap();
+    return true;
+  }
+
+  /**
    * Quét toàn bộ block phụ đề hiện có trong container
    */
   function scanCaptions() {
     if (!currentRoomId) return;
 
-    const container = captionContainer && captionContainer.isConnected
+    const container = captionContainer && captionContainer.isConnected && !isChatSurface(captionContainer)
       ? captionContainer
       : findCaptionContainer();
 
@@ -713,6 +833,7 @@
     const nextRecordingState = containerVisible || isCaptionToggleButtonOn();
 
     let changed = false;
+    if (forgetChatLines()) changed = true;
     if (nextRecordingState !== isRecording) {
       isRecording = nextRecordingState;
       changed = true;
@@ -726,7 +847,7 @@
         const parsed = parseCaptionBlock(blockEl, lastSpeakerInScan);
         if (!parsed) continue;
         lastSpeakerInScan = parsed.speaker;
-        if (upsertCaptionBlock(blockEl, parsed.speaker, parsed.text)) {
+        if (upsertCaptionBlock(blockEl, parsed.speaker, parsed.text, parsed.avatarUrl)) {
           changed = true;
         }
       }
@@ -787,11 +908,18 @@
     // Lưu dữ liệu phòng cũ trước khi chuyển
     if (currentRoomId) {
       scheduleSave(true);
+      scheduleSideSave(true);
     }
 
     currentRoomId = roomId;
     blockTrackMap = new WeakMap();
     attachContainerObserver(null);
+    people = [];
+    peoplePartial = true;
+    chatMessages = [];
+    peopleSignature = '';
+    chatSignature = '';
+    avatarByName.clear();
 
     if (!currentRoomId) {
       entries = [];
@@ -801,8 +929,481 @@
 
     entries = await loadRoomEntries(currentRoomId);
     entryCounter = entries.length;
+    const side = await loadSideData(currentRoomId);
+    people = side.people;
+    peoplePartial = side.partial;
+    chatMessages = side.messages;
+    rememberAvatarsFromPeople();
+    for (const message of chatMessages) {
+      if (message.avatarUrl && message.sender) avatarByName.set(nameKey(message.sender), message.avatarUrl);
+    }
     scanCaptions();
+    scanRoomLists();
     scheduleSave(true);
+  }
+
+  function nameKey(name) {
+    return String(name || '').trim().toLowerCase();
+  }
+
+  function avatarFor(name) {
+    return avatarByName.get(nameKey(name)) || '';
+  }
+
+  function rememberAvatarsFromPeople() {
+    for (const person of people) {
+      if (person.avatarUrl && person.name) avatarByName.set(nameKey(person.name), person.avatarUrl);
+    }
+  }
+
+  /**
+   * Ảnh đại diện là thẻ img của Google, không dựa vào class
+   */
+  function profileImageUrl(img) {
+    if (!img || img.tagName !== 'IMG') return '';
+    const src = img.currentSrc || img.src || img.getAttribute('src') || '';
+    if (!/^https:\/\//i.test(src)) return '';
+    if (!/googleusercontent\.com|ggpht\.com/i.test(src)) return '';
+    const width = Number(img.getAttribute('width') || img.clientWidth || 0);
+    const height = Number(img.getAttribute('height') || img.clientHeight || 0);
+    if ((width && width < 20) || (height && height < 20)) return '';
+    return src;
+  }
+
+  function styledImageUrl(el) {
+    const style = (el && el.getAttribute && el.getAttribute('style')) || '';
+    const match = style.match(/url\(["']?(https:\/\/[^"')]+)["']?\)/i);
+    if (!match) return '';
+    return /googleusercontent\.com|ggpht\.com/i.test(match[1]) ? match[1] : '';
+  }
+
+  function avatarUrlFromTree(root) {
+    if (!root) return '';
+    const imgs = root.tagName === 'IMG' ? [root] : (root.querySelectorAll ? root.querySelectorAll('img') : []);
+    for (const img of imgs) {
+      const url = profileImageUrl(img);
+      if (url) return url;
+    }
+    const own = styledImageUrl(root);
+    if (own) return own;
+    const styled = root.querySelectorAll ? root.querySelectorAll('[style*="url"]') : [];
+    for (const el of styled) {
+      const url = styledImageUrl(el);
+      if (url) return url;
+    }
+    return '';
+  }
+
+  function avatarUrlIn(root) {
+    const direct = avatarUrlFromTree(root);
+    if (direct || !root || !root.querySelectorAll) return direct;
+    const hosts = root.querySelectorAll('*');
+    for (const host of hosts) {
+      if (!host.shadowRoot) continue;
+      const nested = avatarUrlFromTree(host.shadowRoot);
+      if (nested) return nested;
+    }
+    return '';
+  }
+
+  /**
+   * Tên người tham gia hợp lệ, loại nút điều khiển của Meet
+   */
+  function isPlausibleName(name) {
+    if (!name) return false;
+    if (name.length < 1 || name.length > 60) return false;
+    if (!/\p{L}/u.test(name)) return false;
+    const words = name.split(/\s+/);
+    if (words.length > 8) return false;
+    const lowered = name.toLowerCase();
+    const blocked = [
+      'mute', 'unmute', 'microphone', 'camera', 'caption', 'captions', 'phụ đề',
+      'chat', 'people', 'mọi người', 'pin', 'more options', 'more actions',
+      'background', 'effects', 'present now', 'trình bày', 'tắt tiếng', 'bật tiếng',
+      'giơ tay', 'raise hand', 'send a message', 'gửi tin nhắn'
+    ];
+    return !blocked.some((word) => lowered === word || lowered.startsWith(`${word} `));
+  }
+
+  /**
+   * Bỏ hậu tố trạng thái trong nhãn của Meet, cả tiếng Anh và tiếng Việt
+   */
+  function cleanPersonName(raw) {
+    if (!raw) return '';
+    let text = String(raw).split('\n')[0].replace(/\s+/g, ' ').trim();
+    text = text.replace(
+      /\s*\((you|bạn|host|co-host|người tổ chức|đồng tổ chức|presenting|đang trình bày)\)\s*/gi,
+      ' '
+    );
+    const comma = text.split(',')[0].trim();
+    if (comma && comma.length < text.length && text.length - comma.length < 48) {
+      text = comma;
+    }
+    return text.replace(/\s+/g, ' ').trim();
+  }
+
+  /**
+   * Đọc tên từ một ô người tham gia hoặc một hàng trong bảng People
+   */
+  function readPerson(el) {
+    const selfAttr = el.getAttribute('data-self-name')
+      || el.querySelector('[data-self-name]')?.getAttribute('data-self-name')
+      || '';
+    const labels = [];
+    if (selfAttr) labels.push(selfAttr);
+    const ownLabel = el.getAttribute('aria-label');
+    if (ownLabel) labels.push(ownLabel);
+    const labeled = el.querySelectorAll('[aria-label]');
+    for (let i = 0; i < labeled.length && i < 6; i += 1) {
+      labels.push(labeled[i].getAttribute('aria-label'));
+    }
+
+    for (const label of labels) {
+      const name = cleanPersonName(label);
+      if (!isPlausibleName(name)) continue;
+      const isSelf = Boolean(selfAttr) || /\((you|bạn)\)/i.test(label || '');
+      return { name, isSelf, avatarUrl: avatarUrlIn(el) };
+    }
+    return null;
+  }
+
+  /**
+   * Gộp các phần tử có cùng mã người, giữ tên rõ nhất
+   */
+  function peopleFromNodes(nodes) {
+    const found = new Map();
+    for (const el of nodes) {
+      const id = el.getAttribute('data-participant-id');
+      if (!id) continue;
+      const info = readPerson(el);
+      if (!info) continue;
+      const prev = found.get(id);
+      if (!prev || info.name.length > prev.name.length) {
+        found.set(id, {
+          id,
+          name: info.name,
+          isSelf: info.isSelf || Boolean(prev && prev.isSelf),
+          avatarUrl: info.avatarUrl || (prev && prev.avatarUrl) || ''
+        });
+      } else {
+        if (info.isSelf) prev.isSelf = true;
+        if (!prev.avatarUrl && info.avatarUrl) prev.avatarUrl = info.avatarUrl;
+      }
+    }
+    return [...found.values()].sort((a, b) => {
+      if (a.isSelf !== b.isSelf) return a.isSelf ? -1 : 1;
+      return a.name.localeCompare(b.name);
+    });
+  }
+
+  /**
+   * Danh sách người: bảng People đang mở thì lấy đủ, không thì lấy người đang hiện trên màn hình
+   */
+  function scanPeople() {
+    const panelNodes = document.querySelectorAll('[role="listitem"][data-participant-id]');
+    if (panelNodes.length > 0) {
+      const roster = peopleFromNodes(panelNodes);
+      if (roster.length > 0) {
+        people = roster;
+        peoplePartial = false;
+        rememberAvatarsFromPeople();
+        return;
+      }
+    }
+
+    const tiles = document.querySelectorAll('[data-participant-id]');
+    const visible = peopleFromNodes(tiles);
+    if (visible.length === 0) return;
+    people = visible;
+    peoplePartial = true;
+    rememberAvatarsFromPeople();
+  }
+
+  const CHAT_MESSAGE_XPATH = './/*[@data-message-id and contains(@data-message-id, "/messages/")]';
+  const CHAT_TIME_PATTERN = /^(\d{1,2}:\d{2})(\s*[AP]M)?$/i;
+
+  function normalizeSpaces(value) {
+    return String(value || '')
+      .replace(/[\u00A0\u202F\u2007]/g, ' ')
+      .replace(/[ \t]+\n/g, '\n')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+  }
+
+  function parentAcrossShadow(node) {
+    if (!node) return null;
+    if (node.parentElement) return node.parentElement;
+    const root = node.getRootNode && node.getRootNode();
+    return root && root.host ? root.host : null;
+  }
+
+  /**
+   * XPath theo data-message-id. Thuộc tính này là mã tin của Meet, không phải class.
+   */
+  function evaluateMessageNodes(root) {
+    if (!root) return [];
+    if (document.evaluate) {
+      try {
+        const snapshot = document.evaluate(
+          CHAT_MESSAGE_XPATH,
+          root,
+          null,
+          XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+          null
+        );
+        const nodes = [];
+        for (let i = 0; i < snapshot.snapshotLength; i += 1) {
+          nodes.push(snapshot.snapshotItem(i));
+        }
+        if (nodes.length > 0) return nodes;
+      } catch (error) {
+        // Shadow root không phải context XPath hợp lệ thì đọc bằng thuộc tính bên dưới.
+      }
+    }
+    if (!root.querySelectorAll) return [];
+    return [...root.querySelectorAll('[data-message-id*="/messages/"]')];
+  }
+
+  function forEachOpenShadow(visitor) {
+    const queue = [document];
+    const seen = new Set();
+    while (queue.length > 0) {
+      const root = queue.shift();
+      if (!root || seen.has(root)) continue;
+      seen.add(root);
+      const elements = root.querySelectorAll ? root.querySelectorAll('*') : [];
+      elements.forEach((el) => {
+        if (el.shadowRoot) queue.push(el.shadowRoot);
+      });
+      if (root !== document) visitor(root);
+    }
+  }
+
+  /**
+   * Chỉ giữ bong bóng trong cùng, bỏ khung cha cũng mang data-message-id
+   */
+  function chatMessageNodes() {
+    const found = evaluateMessageNodes(document);
+    if (found.length === 0) {
+      forEachOpenShadow((root) => {
+        evaluateMessageNodes(root).forEach((node) => found.push(node));
+      });
+    }
+    return found.filter((node) => node && !node.querySelector('[data-message-id*="/messages/"]'));
+  }
+
+  function leafTexts(root) {
+    const texts = [];
+    const walk = (el) => {
+      const children = [...el.children].filter((child) => child.tagName !== 'SCRIPT' && child.tagName !== 'STYLE');
+      if (children.length === 0) {
+        const text = normalizeSpaces(el.textContent || '').replace(/\s+/g, ' ');
+        if (text) texts.push(text);
+        return;
+      }
+      children.forEach(walk);
+    };
+    walk(root);
+    return texts;
+  }
+
+  /**
+   * Tên và giờ là chữ ngắn ở khối ngay trước bong bóng, không dựa vào class
+   */
+  function readNearbyMeta(node) {
+    let current = node;
+    for (let depth = 0; depth < 6 && current; depth += 1) {
+      let sibling = current.previousElementSibling;
+      while (sibling) {
+        if (!sibling.querySelector('[data-message-id*="/messages/"]')) {
+          const texts = leafTexts(sibling);
+          const joined = texts.join(' ');
+          if (joined.length > 0 && joined.length <= 120) {
+            const timeLabel = texts.find((text) => CHAT_TIME_PATTERN.test(text)) || '';
+            const senderName = texts
+              .map((text) => cleanPersonName(text))
+              .find((text) => text && text !== timeLabel && !CHAT_TIME_PATTERN.test(text) && isPlausibleName(text)) || '';
+            if (timeLabel || senderName) {
+              return { senderName, timeLabel, avatarUrl: avatarBeside(current) || avatarUrlIn(sibling) };
+            }
+          }
+        }
+        sibling = sibling.previousElementSibling;
+      }
+      current = parentAcrossShadow(current);
+    }
+    return { senderName: '', timeLabel: '', avatarUrl: '' };
+  }
+
+  /**
+   * Ảnh thường đứng ngay trước khối tên, cùng hàng với bong bóng
+   */
+  function avatarBeside(node) {
+    let current = node;
+    for (let depth = 0; depth < 5 && current; depth += 1) {
+      let sibling = current.previousElementSibling;
+      while (sibling) {
+        const url = avatarUrlIn(sibling);
+        if (url) return url;
+        sibling = sibling.previousElementSibling;
+      }
+      current = parentAcrossShadow(current);
+    }
+    return '';
+  }
+
+  /**
+   * Tách một bong bóng chat của Meet thành người gửi, giờ và nội dung
+   */
+  function parseChatNode(node, previousSender) {
+    const id = node.getAttribute('data-message-id') || '';
+    if (!id.includes('/messages/')) return null;
+
+    const text = normalizeSpaces(node.innerText || node.textContent || '');
+    if (!text || text.length > 8000) return null;
+
+    const meta = readNearbyMeta(node);
+    const sender = isPlausibleName(meta.senderName) ? meta.senderName : (previousSender || 'Unknown');
+    const avatarUrl = meta.avatarUrl || avatarFor(sender);
+    if (avatarUrl && sender !== 'Unknown') avatarByName.set(nameKey(sender), avatarUrl);
+    return { id, sender, text, timeLabel: meta.timeLabel, avatarUrl };
+  }
+
+  /**
+   * Đọc các tin đang có trong bảng chat và gộp vào lịch sử của phòng
+   */
+  function scanChat() {
+    const nodes = chatMessageNodes();
+    if (nodes.length === 0) return;
+
+    const byId = new Map(chatMessages.map((message) => [message.id, message]));
+    let previousSender = '';
+    let previousAvatar = '';
+    let changed = false;
+
+    for (const node of nodes) {
+      const parsed = parseChatNode(node, previousSender);
+      if (!parsed) continue;
+      if (!parsed.avatarUrl && parsed.sender === previousSender) parsed.avatarUrl = previousAvatar;
+      if (parsed.sender !== 'Unknown') {
+        previousSender = parsed.sender;
+        if (parsed.avatarUrl) previousAvatar = parsed.avatarUrl;
+      }
+      const prev = byId.get(parsed.id);
+      if (!prev) {
+        byId.set(parsed.id, {
+          id: parsed.id,
+          sender: parsed.sender,
+          text: parsed.text,
+          timeLabel: parsed.timeLabel,
+          avatarUrl: parsed.avatarUrl || '',
+          capturedAt: Date.now()
+        });
+        changed = true;
+        continue;
+      }
+      const nextAvatar = parsed.avatarUrl || prev.avatarUrl || '';
+      if (prev.text !== parsed.text || prev.sender !== parsed.sender || prev.timeLabel !== parsed.timeLabel || prev.avatarUrl !== nextAvatar) {
+        prev.text = parsed.text;
+        prev.sender = parsed.sender;
+        prev.timeLabel = parsed.timeLabel;
+        prev.avatarUrl = nextAvatar;
+        changed = true;
+      }
+    }
+
+    if (!changed && byId.size === chatMessages.length) return;
+    const next = [...byId.values()];
+    chatMessages = next.slice(-MAX_CHAT_MESSAGES);
+  }
+
+  /**
+   * Quét người và chat, chỉ ghi storage khi nội dung đổi
+   */
+  function scanRoomLists() {
+    if (!currentRoomId) return;
+    scanPeople();
+    scanChat();
+    if (forgetChatLines()) scheduleSave(false);
+
+    const nextPeopleSignature = `${peoplePartial ? 1 : 0}|${people.map((person) => `${person.id}|${person.name}|${person.isSelf ? 1 : 0}|${person.avatarUrl || ''}`).join('\n')}`;
+    const nextChatSignature = chatMessages.map((message) => `${message.id}|${message.sender}|${message.timeLabel}|${message.avatarUrl || ''}|${message.text}`).join('\n');
+    if (nextPeopleSignature === peopleSignature && nextChatSignature === chatSignature) return;
+    peopleSignature = nextPeopleSignature;
+    chatSignature = nextChatSignature;
+    scheduleSideSave(false);
+  }
+
+  /**
+   * Lưu danh sách người và chat theo mã phòng
+   */
+  function scheduleSideSave(immediate = false) {
+    if (!currentRoomId) return;
+    const roomId = currentRoomId;
+    const persist = () => {
+      sideSaveTimer = null;
+      if (roomId !== currentRoomId) return;
+      try {
+        chrome.storage.local.set({
+          [`${PEOPLE_PREFIX}${roomId}`]: {
+            roomId,
+            partial: peoplePartial,
+            people,
+            updatedAt: Date.now()
+          },
+          [`${CHAT_PREFIX}${roomId}`]: {
+            roomId,
+            messages: chatMessages,
+            updatedAt: Date.now()
+          },
+          [LAST_ROOM_KEY]: roomId
+        });
+      } catch {
+        // Extension context có thể đã bị reload
+      }
+    };
+
+    if (immediate) {
+      if (sideSaveTimer) {
+        clearTimeout(sideSaveTimer);
+        sideSaveTimer = null;
+      }
+      persist();
+      return;
+    }
+    if (sideSaveTimer) return;
+    sideSaveTimer = setTimeout(persist, SAVE_DEBOUNCE_MS);
+  }
+
+  /**
+   * Tải danh sách người và chat đã lưu của một phòng
+   */
+  function loadSideData(roomId) {
+    return new Promise((resolve) => {
+      if (!roomId) {
+        resolve({ people: [], partial: true, messages: [] });
+        return;
+      }
+      const peopleKey = `${PEOPLE_PREFIX}${roomId}`;
+      const chatKey = `${CHAT_PREFIX}${roomId}`;
+      try {
+        chrome.storage.local.get([peopleKey, chatKey], (result) => {
+          if (chrome.runtime.lastError) {
+            resolve({ people: [], partial: true, messages: [] });
+            return;
+          }
+          const peopleRecord = result[peopleKey] || {};
+          const chatRecord = result[chatKey] || {};
+          resolve({
+            people: Array.isArray(peopleRecord.people) ? peopleRecord.people : [],
+            partial: peopleRecord.partial !== false,
+            messages: Array.isArray(chatRecord.messages) ? chatRecord.messages : []
+          });
+        });
+      } catch {
+        resolve({ people: [], partial: true, messages: [] });
+      }
+    });
   }
 
   /**
@@ -811,13 +1412,24 @@
   chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     if (!message || !message.type) return;
 
+    if (message.type === 'SET_KEEP_MUTED') {
+      keepMuted = Boolean(message.enabled);
+      if (keepMuted) enforceMute();
+      sendResponse({ success: true, enabled: keepMuted });
+      return;
+    }
+
     if (message.type === 'GET_STATUS') {
       // Quét tức thì trước khi trả kết quả để luôn có dữ liệu mới nhất
       scanCaptions();
+      scanRoomLists();
       sendResponse({
         roomId: currentRoomId,
         isRecording,
-        entries
+        entries,
+        people,
+        peoplePartial,
+        chat: chatMessages
       });
       return;
     }
@@ -865,6 +1477,7 @@
           scheduleScan();
         }
       }
+      scheduleMuteCheck();
     });
 
     if (document.body) {
@@ -880,14 +1493,31 @@
         syncRoomContext();
       } else if (currentRoomId) {
         scanCaptions();
+        scanRoomLists();
       }
+      if (keepMuted) enforceMute();
     }, HEALTH_CHECK_MS);
 
+    chrome.storage.local.get([KEEP_MUTED_KEY], (result) => {
+      keepMuted = Boolean(result[KEEP_MUTED_KEY]);
+      if (keepMuted) enforceMute();
+    });
+
+    chrome.storage.onChanged.addListener((changes, areaName) => {
+      if (areaName !== 'local' || !changes[KEEP_MUTED_KEY]) return;
+      keepMuted = Boolean(changes[KEEP_MUTED_KEY].newValue);
+      if (keepMuted) enforceMute();
+    });
+
     // Lưu ngay dữ liệu nếu người dùng đóng hoặc rời khỏi tab
-    window.addEventListener('beforeunload', () => scheduleSave(true));
+    window.addEventListener('beforeunload', () => {
+      scheduleSave(true);
+      scheduleSideSave(true);
+    });
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') {
         scheduleSave(true);
+        scheduleSideSave(true);
       }
     });
   }

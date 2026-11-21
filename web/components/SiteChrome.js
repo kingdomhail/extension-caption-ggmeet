@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { AUTHOR, EMAIL, routes, SITE_NAME, VERSION } from "@/lib/site"
+import { AUTHOR, EMAIL, FACEBOOK, routes, SITE_NAME, VERSION } from "@/lib/site"
 
 const chrome = {
   en: {
@@ -87,6 +87,7 @@ export function SiteChrome({ lang, page, children }) {
             <Link href={href("support")}>{t.support}</Link>
             <Link href={href("privacy")}>{t.privacy}</Link>
             <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+            <a href={FACEBOOK} target="_blank" rel="noopener noreferrer">Facebook</a>
           </div>
         </div>
       </footer>

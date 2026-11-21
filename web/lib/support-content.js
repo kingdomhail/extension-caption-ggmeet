@@ -2,12 +2,12 @@ export const supportCopy = {
   en: {
     kicker: "Support",
     title: "When captions are not showing in the popup",
-    lede: "This page is for people using Captions Recorder for Google Meet, version 1.0.0. Most cases are captions still off, or a Meet tab that was open before the extension was installed.",
+    lede: "This page is for people using Captions Recorder for Google Meet, version 1.1.0. Most cases are captions still off, or a Meet tab that was open before the extension was installed.",
     useTitle: "How to use it",
     steps: [
       ["Install in Chrome and pin the icon", "The extension runs in Google Chrome. After installing, pin the CC icon to the toolbar so you do not have to open the extensions menu."],
       ["Join a room and turn captions on", "Open the meeting at meet.google.com and click Captions (CC). If the tab was open before installation, press F5 once."],
-      ["Open the popup when you need the text", "Copy All copies everything. Download .txt saves a file. Clear Data deletes the current room's transcript after you confirm."],
+      ["Open the popup when you need the text", "Captions has Copy All, Download .txt, and Clear Data. People downloads PDF, Excel, or PNG. Chat downloads a .txt file. Keep mic muted is off until you turn it on."],
     ],
     statusTitle: "What the popup is saying",
     statusIntro: "Popup text is English. The first column is the exact pair you see: the status line, then the hint on the right.",
@@ -50,7 +50,8 @@ export const supportCopy = {
       {
         q: "Does it translate or record audio?",
         a: [
-          "No. The extension does not use the microphone, record audio, or translate. It only copies the caption text Google Meet is drawing on screen.",
+          "No. The extension does not record audio and it does not translate. Captions are the text Google Meet is already drawing on screen.",
+          "Keep mic muted is optional. When it is on, the extension clicks Meet's Turn off microphone button if the mic opens. It still does not record sound.",
           "To get captions in another language, turn on captions or translation inside Google Meet. Whatever text Meet shows is the text that gets saved.",
         ],
       },
@@ -74,14 +75,14 @@ export const supportCopy = {
       },
       {
         q: "Where does the .txt file go?",
-        a: ["Chrome saves it through the browser download shelf. The file name is `meet-captions-YYYY-MM-DD.txt`. The date is the day you download it, on your computer's clock. Inside is UTF-8 text, one utterance per line: `[HH:MM:SS] Name: Text`."],
+        a: ["Chrome saves it through the browser download shelf. Caption files are named `meet-captions-YYYY-MM-DD.txt`. Chat files are `meet-chat-YYYY-MM-DD.txt`. People files use the same date with `.pdf`, `.xlsx`, or `.png`. The date is the day you download, on your computer's clock."],
       },
       {
         q: "Which permissions does it ask for?",
         list: [
-          "`storage` — saves captions on the device, per room code, so closing the popup does not drop the transcript.",
+          "`storage` — saves captions, participant names, profile photo addresses, and chat on the device, per room code.",
           "`activeTab` — when you click the icon, checks whether the current tab is a Meet room and talks to the script on that tab.",
-          "The content script is attached only to `https://meet.google.com/*` so it can read the visible caption area.",
+          "The content script is attached only to `https://meet.google.com/*`. It reads visible captions, the participant list, and in-call chat, and it can click the microphone button when Keep mic muted is on.",
         ],
       },
       {
@@ -100,12 +101,12 @@ export const supportCopy = {
   vi: {
     kicker: "Hỗ trợ",
     title: "Khi phụ đề chưa hiện trong popup",
-    lede: "Trang này dành cho người đang dùng Captions Recorder for Google Meet, phiên bản 1.0.0. Phần lớn trường hợp là chưa bật CC, hoặc tab Meet được mở trước khi cài tiện ích.",
+    lede: "Trang này dành cho người đang dùng Captions Recorder for Google Meet, phiên bản 1.1.0. Phần lớn trường hợp là chưa bật CC, hoặc tab Meet được mở trước khi cài tiện ích.",
     useTitle: "Cách dùng",
     steps: [
       ["Cài trên Chrome và ghim biểu tượng", "Tiện ích chạy trên Google Chrome. Sau khi cài, ghim biểu tượng CC lên thanh công cụ để khỏi phải đi tìm trong menu tiện ích."],
       ["Vào phòng và bật phụ đề", "Mở cuộc họp tại meet.google.com rồi bấm Phụ đề (CC). Nếu tab đã mở từ trước khi cài, bấm F5 một lần."],
-      ["Mở popup khi cần lấy chữ", "Copy All chép toàn bộ. Download .txt tải file. Clear Data xóa bản ghi của phòng hiện tại sau khi bạn bấm xác nhận."],
+      ["Mở popup khi cần lấy chữ", "Captions có Copy All, Download .txt và Clear Data. People tải PDF, Excel hoặc PNG. Chat tải file .txt. Keep mic muted chỉ chạy khi bạn bật."],
     ],
     statusTitle: "Popup đang nói gì",
     statusIntro: "Chữ trên popup là tiếng Anh. Cột đầu tiên là đúng cụm bạn nhìn thấy: dòng trạng thái, rồi dòng gợi ý bên phải.",
@@ -148,7 +149,8 @@ export const supportCopy = {
       {
         q: "Tiện ích có dịch hoặc ghi âm không?",
         a: [
-          "Không. Tiện ích không dùng micro, không ghi âm, không dịch. Nó chỉ chép phần chữ Google Meet đang vẽ trên màn hình.",
+          "Không. Tiện ích không ghi âm và không dịch. Phụ đề là chữ Google Meet đang hiện trên màn hình.",
+          "Keep mic muted là tùy chọn. Khi bật, tiện ích bấm nút Tắt micrô của Meet nếu mic vừa mở. Nó vẫn không ghi âm.",
           "Muốn có phụ đề ngôn ngữ khác thì bật phụ đề hoặc bản dịch ngay trong Google Meet. Chữ nào Meet hiện, tiện ích ghi chữ đó.",
         ],
       },
@@ -171,15 +173,15 @@ export const supportCopy = {
         ],
       },
       {
-        q: "File .txt nằm ở đâu?",
-        a: ["Chrome lưu qua khung tải xuống của trình duyệt. Tên file là `meet-captions-YYYY-MM-DD.txt`. Ngày là ngày bạn bấm tải, theo giờ máy bạn. Bên trong là văn bản UTF-8, mỗi câu một dòng: `[HH:MM:SS] Tên: Nội dung`."],
+        q: "File tải về nằm ở đâu?",
+        a: ["Chrome lưu qua khung tải xuống của trình duyệt. File phụ đề là `meet-captions-YYYY-MM-DD.txt`. File chat là `meet-chat-YYYY-MM-DD.txt`. Danh sách người dùng cùng ngày với đuôi `.pdf`, `.xlsx` hoặc `.png`. Ngày là ngày bạn bấm tải, theo giờ máy bạn."],
       },
       {
         q: "Tiện ích xin những quyền nào?",
         list: [
-          "`storage` — lưu phụ đề trên máy, theo mã phòng, để đóng popup không mất bản ghi.",
+          "`storage` — lưu phụ đề, tên người, địa chỉ ảnh và chat trên máy, theo mã phòng.",
           "`activeTab` — khi bạn bấm biểu tượng, nhận ra tab hiện tại có phải phòng Meet hay không và nói chuyện với script trên tab đó.",
-          "Script nội dung chỉ gắn vào `https://meet.google.com/*` để đọc vùng phụ đề đang hiện.",
+          "Script nội dung chỉ gắn vào `https://meet.google.com/*`. Nó đọc phụ đề, danh sách người và chat đang hiện, và có thể bấm nút mic khi bạn bật Keep mic muted.",
         ],
       },
       {

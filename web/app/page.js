@@ -4,7 +4,7 @@ import { AUTHOR, absoluteUrl, pageMetadata, routes, SITE_NAME, webPageJsonLd } f
 
 const title = "Captions Recorder for Google Meet"
 const description =
-  "Official site for Captions Recorder for Google Meet. Capture, preview, copy, and export live Google Meet captions with timestamps in your browser."
+  "Official site for Captions Recorder for Google Meet. Save captions, the participant list, and in-call chat in your browser, and keep the microphone muted."
 
 export const metadata = pageMetadata({ lang: "en", page: "home", title, description })
 
